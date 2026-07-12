@@ -2,18 +2,18 @@
  * Tokens de tema do Cub's (base zinc), em pares light/dark.
  *
  * - background: zinc-100 (light) / zinc-950 (dark)
- * - contrast:   zinc-200 (light) / zinc-800 (dark) — superfícies elevadas (cards, inputs)
+ * - contrast:   zinc-200 (light) / zinc-800 (dark) — superfícies elevadas (painéis, inputs)
  * - divider:    zinc-300 (light) / zinc-700 (dark)
  * - text:       zinc-900 (light) / zinc-100 (dark)
  *
  * As mesmas cores existem como variáveis CSS em `src/index.css`
- * (--background, --contrast, --divider, --foreground) para os componentes
- * do shadcn/ui; aqui ficam as classes utilitárias prontas para compor com `cn`.
+ * (--background, --contrast, --divider, --foreground); aqui ficam as classes
+ * utilitárias prontas para compor com `cn`.
  */
 export const THEME = {
   /** Fundo base da aplicação. */
   background: 'bg-zinc-100 dark:bg-zinc-950',
-  /** Superfície de contraste (cards, inputs, painéis). */
+  /** Superfície de contraste (painéis, inputs). */
   contrast: 'bg-zinc-200 dark:bg-zinc-800',
   /** Cor de divisores/bordas neutras. */
   divider: 'border-zinc-300 dark:border-zinc-700',

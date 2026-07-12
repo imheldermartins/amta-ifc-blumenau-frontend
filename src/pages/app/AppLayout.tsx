@@ -2,6 +2,7 @@ import { Outlet, useNavigate, useParams } from '@tanstack/react-router'
 
 import { Button } from '@components/Button'
 import { ThemeToggle } from '@components/ThemeToggle'
+import { Typography } from '@components/Typography'
 import { useAuth } from '@contexts/AuthContext'
 import { i18n } from '@/lib/i18n'
 
@@ -22,11 +23,13 @@ export function AppLayout() {
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="flex items-center justify-between border-b border-divider bg-contrast px-6 py-3">
-        <span className="text-lg font-bold tracking-tight">{i18n('common.app-name')}</span>
+        <Typography variant="h3" as="span">
+          {i18n('common.app-name')}
+        </Typography>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground">
+          <Typography variant="subtitle" as="span">
             {auth.user?.name ?? auth.user?.email}
-          </span>
+          </Typography>
           <ThemeToggle />
           <Button variant="outlined" color="red" onClick={handleSignOut}>
             {i18n('common.sair')}

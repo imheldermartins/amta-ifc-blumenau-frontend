@@ -1,99 +1,74 @@
 /**
- * Paleta de cores padrão do Cub's.
+ * Paleta de cores de destaque do Cub's.
+ *
+ * As chaves são SEMÂNTICAS e mapeiam para hues do Tailwind:
+ *   red → rose · blue → blue · purple → violet · green → emerald
+ *
+ * Regra de tema: superfícies/bordas na cor usam o tom `-300` no light theme
+ * e `-500` no dark theme. Texto sobre fundo colorido é sempre zinc-950
+ * (ambos os tons são claros o bastante). Texto NA cor (outlined, erros,
+ * links) usa `-600`/`-400` para manter contraste de leitura.
  *
  * Todas as classes ficam escritas por extenso (string literal) porque o
  * Tailwind só gera o CSS de classes que aparecem completas no código —
- * montar `bg-${cor}-600` em runtime não funciona.
+ * montar `bg-${cor}-300` em runtime não funciona.
  *
- * Para adicionar uma cor: inclua-a em `PALETTE_COLORS` e preencha a nova
- * entrada em `PALETTE` com as classes correspondentes.
+ * Para adicionar uma cor: inclua a chave em `PALETTE_COLORS` e preencha a
+ * nova entrada em `PALETTE` seguindo a regra 300/500.
  */
 import { clsx } from 'clsx'
 
-export const PALETTE_COLORS = [
-  'blue',
-  'red',
-  'yellow',
-  'orange',
-  'purple',
-  'green',
-  'pink',
-] as const
+export const PALETTE_COLORS = ['blue', 'red', 'purple', 'green'] as const
 
 export type PaletteColor = (typeof PALETTE_COLORS)[number]
 
 export interface PaletteEntry {
-  /** Fundo sólido na cor. */
+  /** Fundo sólido na cor (300 light / 500 dark). */
   bg: string
-  /** Fundo sólido no estado hover. */
+  /** Fundo sólido no estado hover (um tom acima). */
   bgHover: string
   /** Fundo suave (translúcido) na cor — bom para hover de outlined/chips. */
   bgSoft: string
-  /** Texto na cor (ajustado para light/dark). */
+  /** Texto NA cor, legível sobre o background do tema. */
   text: string
   /** Texto de contraste para usar SOBRE o fundo sólido. */
   textOnFilled: string
-  /** Borda na cor (ajustada para light/dark). */
+  /** Borda na cor (300 light / 500 dark). */
   border: string
 }
 
 export const PALETTE: Record<PaletteColor, PaletteEntry> = {
   blue: {
-    bg: 'bg-blue-600',
-    bgHover: 'hover:bg-blue-700',
-    bgSoft: 'hover:bg-blue-600/10',
+    bg: 'bg-blue-300 dark:bg-blue-500',
+    bgHover: 'hover:bg-blue-400 dark:hover:bg-blue-600',
+    bgSoft: 'hover:bg-blue-300/25 dark:hover:bg-blue-500/20',
     text: 'text-blue-600 dark:text-blue-400',
-    textOnFilled: 'text-white',
-    border: 'border-blue-600 dark:border-blue-400',
+    textOnFilled: 'text-zinc-950',
+    border: 'border-blue-300 dark:border-blue-500',
   },
   red: {
-    bg: 'bg-red-600',
-    bgHover: 'hover:bg-red-700',
-    bgSoft: 'hover:bg-red-600/10',
-    text: 'text-red-600 dark:text-red-400',
-    textOnFilled: 'text-white',
-    border: 'border-red-600 dark:border-red-400',
-  },
-  yellow: {
-    // Amarelo sólido precisa de texto escuro para manter contraste.
-    bg: 'bg-yellow-400',
-    bgHover: 'hover:bg-yellow-500',
-    bgSoft: 'hover:bg-yellow-400/15',
-    text: 'text-yellow-600 dark:text-yellow-400',
-    textOnFilled: 'text-yellow-950',
-    border: 'border-yellow-500 dark:border-yellow-400',
-  },
-  orange: {
-    bg: 'bg-orange-600',
-    bgHover: 'hover:bg-orange-700',
-    bgSoft: 'hover:bg-orange-600/10',
-    text: 'text-orange-600 dark:text-orange-400',
-    textOnFilled: 'text-white',
-    border: 'border-orange-600 dark:border-orange-400',
+    bg: 'bg-rose-300 dark:bg-rose-500',
+    bgHover: 'hover:bg-rose-400 dark:hover:bg-rose-600',
+    bgSoft: 'hover:bg-rose-300/25 dark:hover:bg-rose-500/20',
+    text: 'text-rose-600 dark:text-rose-400',
+    textOnFilled: 'text-zinc-950',
+    border: 'border-rose-300 dark:border-rose-500',
   },
   purple: {
-    bg: 'bg-purple-600',
-    bgHover: 'hover:bg-purple-700',
-    bgSoft: 'hover:bg-purple-600/10',
-    text: 'text-purple-600 dark:text-purple-400',
-    textOnFilled: 'text-white',
-    border: 'border-purple-600 dark:border-purple-400',
+    bg: 'bg-violet-300 dark:bg-violet-500',
+    bgHover: 'hover:bg-violet-400 dark:hover:bg-violet-600',
+    bgSoft: 'hover:bg-violet-300/25 dark:hover:bg-violet-500/20',
+    text: 'text-violet-600 dark:text-violet-400',
+    textOnFilled: 'text-zinc-950',
+    border: 'border-violet-300 dark:border-violet-500',
   },
   green: {
-    bg: 'bg-green-600',
-    bgHover: 'hover:bg-green-700',
-    bgSoft: 'hover:bg-green-600/10',
-    text: 'text-green-600 dark:text-green-400',
-    textOnFilled: 'text-white',
-    border: 'border-green-600 dark:border-green-400',
-  },
-  pink: {
-    bg: 'bg-pink-600',
-    bgHover: 'hover:bg-pink-700',
-    bgSoft: 'hover:bg-pink-600/10',
-    text: 'text-pink-600 dark:text-pink-400',
-    textOnFilled: 'text-white',
-    border: 'border-pink-600 dark:border-pink-400',
+    bg: 'bg-emerald-300 dark:bg-emerald-500',
+    bgHover: 'hover:bg-emerald-400 dark:hover:bg-emerald-600',
+    bgSoft: 'hover:bg-emerald-300/25 dark:hover:bg-emerald-500/20',
+    text: 'text-emerald-600 dark:text-emerald-400',
+    textOnFilled: 'text-zinc-950',
+    border: 'border-emerald-300 dark:border-emerald-500',
   },
 }
 
@@ -101,7 +76,7 @@ export const PALETTE: Record<PaletteColor, PaletteEntry> = {
  * Helper sob demanda que combina `bg` + `text` de contraste de uma cor.
  *
  * @example
- * paletteBgText('blue') // → "bg-blue-600 text-white"
+ * paletteBgText('blue') // → "bg-blue-300 dark:bg-blue-500 text-zinc-950"
  */
 export function paletteBgText(color: PaletteColor): string {
   const entry = PALETTE[color]
@@ -112,7 +87,7 @@ export function paletteBgText(color: PaletteColor): string {
  * Combina `border` + `text` na própria cor (base do estilo outlined).
  *
  * @example
- * paletteBorderText('green') // → "border-green-600 dark:border-green-400 text-green-600 dark:text-green-400"
+ * paletteBorderText('green') // → "border-emerald-300 dark:border-emerald-500 text-emerald-600 dark:text-emerald-400"
  */
 export function paletteBorderText(color: PaletteColor): string {
   const entry = PALETTE[color]

@@ -3,7 +3,11 @@ import { FormProvider, useForm } from 'react-hook-form'
 
 import { Button } from '@components/Button'
 import { TextField } from '@components/TextField'
+import { Typography } from '@components/Typography'
 import { i18n } from '@/lib/i18n'
+import { PALETTE } from '@/lib/palette'
+import { THEME } from '@/lib/theme'
+import { cn } from '@/lib/utils'
 import { combineRules, validators } from '@/lib/validators'
 
 interface ProfileFormValues {
@@ -15,7 +19,7 @@ interface ProfileFormValues {
 
 /**
  * Demonstração do kit de formulários: react-hook-form via contexto
- * (FormProvider + TextField), máscaras (telefone/CPF), validators com
+ * (FormProvider + TextField), máscaras (telefone/CPF/moeda), validators com
  * mensagens prontas e prévia ao vivo com watch().
  */
 export function FormExampleSection() {
@@ -30,13 +34,11 @@ export function FormExampleSection() {
   const empty = i18n('pages.app.exemplo-formulario.previa-vazio')
 
   return (
-    <section className="rounded-xl border border-divider bg-contrast p-6">
-      <h3 className="text-lg font-bold tracking-tight">
-        {i18n('pages.app.exemplo-formulario.titulo')}
-      </h3>
-      <p className="mt-1 text-sm text-muted-foreground">
+    <section className="rounded border border-divider bg-contrast p-6">
+      <Typography variant="h3">{i18n('pages.app.exemplo-formulario.titulo')}</Typography>
+      <Typography variant="subtitle" className="mt-1">
         {i18n('pages.app.exemplo-formulario.descricao')}
-      </p>
+      </Typography>
 
       <FormProvider {...form}>
         <form
@@ -80,9 +82,11 @@ export function FormExampleSection() {
         </form>
       </FormProvider>
 
-      <div className="mt-4 rounded-lg border border-divider bg-background p-4 text-sm">
-        <p className="font-medium">{i18n('pages.app.exemplo-formulario.previa-titulo')}</p>
-        <ul className="mt-2 space-y-1 text-muted-foreground">
+      <div className="mt-4 rounded border border-divider bg-background p-4">
+        <Typography variant="body" className="font-medium">
+          {i18n('pages.app.exemplo-formulario.previa-titulo')}
+        </Typography>
+        <ul className={cn('mt-2 space-y-1 text-sm', THEME.textMuted)}>
           <li>
             {i18n('pages.app.exemplo-formulario.campo-nome')}: {values.nome || empty}
           </li>
@@ -98,10 +102,13 @@ export function FormExampleSection() {
         </ul>
 
         {submitted && (
-          <p className="mt-3 border-t border-divider pt-3 text-green-600 dark:text-green-400">
+          <Typography
+            variant="body"
+            className={cn('mt-3 border-t border-divider pt-3', PALETTE.green.text)}
+          >
             {i18n('pages.app.exemplo-formulario.dados-enviados')}{' '}
             <span className="font-mono text-xs">{JSON.stringify(submitted)}</span>
-          </p>
+          </Typography>
         )}
       </div>
     </section>

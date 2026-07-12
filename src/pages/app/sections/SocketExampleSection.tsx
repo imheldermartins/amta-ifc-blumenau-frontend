@@ -3,8 +3,10 @@ import { FormProvider, useForm } from 'react-hook-form'
 
 import { Button } from '@components/Button'
 import { TextField } from '@components/TextField'
+import { Typography } from '@components/Typography'
 import { useSocket, type SocketStatus } from '@/hooks/useSocket'
 import { i18n } from '@/lib/i18n'
+import { PALETTE } from '@/lib/palette'
 import { cn } from '@/lib/utils'
 import { validators } from '@/lib/validators'
 import type { EchoReply } from '@/services/SocketService'
@@ -14,10 +16,10 @@ interface EchoFormValues {
 }
 
 const STATUS_STYLES: Record<SocketStatus, { dot: string; labelKey: string }> = {
-  connected: { dot: 'bg-green-500', labelKey: 'pages.app.exemplo-socket.status-conectado' },
-  connecting: { dot: 'bg-yellow-500', labelKey: 'pages.app.exemplo-socket.status-conectando' },
+  connected: { dot: 'bg-emerald-300 dark:bg-emerald-500', labelKey: 'pages.app.exemplo-socket.status-conectado' },
+  connecting: { dot: 'bg-amber-300 dark:bg-amber-500', labelKey: 'pages.app.exemplo-socket.status-conectando' },
   disconnected: { dot: 'bg-zinc-400', labelKey: 'pages.app.exemplo-socket.status-desconectado' },
-  error: { dot: 'bg-red-500', labelKey: 'pages.app.exemplo-socket.status-erro' },
+  error: { dot: 'bg-rose-300 dark:bg-rose-500', labelKey: 'pages.app.exemplo-socket.status-erro' },
 }
 
 /**
@@ -48,35 +50,33 @@ export function SocketExampleSection() {
   const statusStyle = STATUS_STYLES[status]
 
   return (
-    <section className="rounded-xl border border-divider bg-contrast p-6">
+    <section className="rounded border border-divider bg-contrast p-6">
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-lg font-bold tracking-tight">
-          {i18n('pages.app.exemplo-socket.titulo')}
-        </h3>
-        <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+        <Typography variant="h3">{i18n('pages.app.exemplo-socket.titulo')}</Typography>
+        <Typography variant="subtitle" as="span" className="inline-flex items-center gap-2">
           <span className={cn('size-2.5 rounded-full', statusStyle.dot)} />
           {i18n(statusStyle.labelKey)}
-        </span>
+        </Typography>
       </div>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <Typography variant="subtitle" className="mt-1">
         {i18n('pages.app.exemplo-socket.descricao')}
-      </p>
+      </Typography>
 
       {status === 'error' && error && (
-        <div className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm">
-          <p className="font-medium text-destructive">
+        <div className={cn('mt-3 rounded border bg-rose-500/10 p-3', PALETTE.red.border)}>
+          <Typography variant="body" className={cn('font-medium', PALETTE.red.text)}>
             {i18n('pages.app.exemplo-socket.erro-detalhe', { message: error })}
-          </p>
-          <p className="mt-1 text-muted-foreground">
+          </Typography>
+          <Typography variant="subtitle" className="mt-1">
             {i18n('pages.app.exemplo-socket.erro-dica')}
-          </p>
+          </Typography>
         </div>
       )}
 
       {presence !== null && (
-        <p className="mt-3 text-sm">
+        <Typography variant="body" className="mt-3">
           {i18n('pages.app.exemplo-socket.conexoes-ativas', { count: presence })}
-        </p>
+        </Typography>
       )}
 
       <FormProvider {...form}>
@@ -100,17 +100,23 @@ export function SocketExampleSection() {
         </form>
       </FormProvider>
 
-      <div className="mt-4 rounded-lg border border-divider bg-background p-4 text-sm">
+      <div className="mt-4 rounded border border-divider bg-background p-4">
         {reply ? (
           <>
-            <p className="font-medium">{i18n('pages.app.exemplo-socket.resposta')}</p>
-            <p className="mt-2 text-muted-foreground">"{reply.message}"</p>
-            <p className="mt-1 font-mono text-xs text-muted-foreground">
+            <Typography variant="body" className="font-medium">
+              {i18n('pages.app.exemplo-socket.resposta')}
+            </Typography>
+            <Typography variant="subtitle" className="mt-2">
+              "{reply.message}"
+            </Typography>
+            <Typography variant="caption" as="p" className="mt-1 font-mono">
               userId={reply.userId} · {reply.at}
-            </p>
+            </Typography>
           </>
         ) : (
-          <p className="text-muted-foreground">{i18n('pages.app.exemplo-socket.sem-resposta')}</p>
+          <Typography variant="subtitle">
+            {i18n('pages.app.exemplo-socket.sem-resposta')}
+          </Typography>
         )}
       </div>
     </section>

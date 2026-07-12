@@ -4,8 +4,11 @@ import { Link, useNavigate, useParams } from '@tanstack/react-router'
 
 import { Button } from '@components/Button'
 import { TextField } from '@components/TextField'
+import { Typography } from '@components/Typography'
 import { useAuth } from '@contexts/AuthContext'
 import { i18n } from '@/lib/i18n'
+import { PALETTE } from '@/lib/palette'
+import { cn } from '@/lib/utils'
 import { combineRules, validators } from '@/lib/validators'
 import { InvalidCredentialsError } from '@/services/AuthService'
 
@@ -37,11 +40,13 @@ export function SignInPage() {
 
   return (
     <main className="flex min-h-dvh items-center justify-center p-6">
-      <div className="w-full max-w-sm rounded-xl border border-divider bg-contrast p-8 shadow-sm">
-        <h1 className="text-2xl font-bold tracking-tight">
+      <div className="w-full max-w-sm rounded border border-divider bg-contrast p-8 shadow-sm">
+        <Typography variant="h2" as="h1">
           {i18n('pages.sign-in.entre-seja-bem-vindo')}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">{i18n('pages.sign-in.subtitulo')}</p>
+        </Typography>
+        <Typography variant="subtitle" className="mt-1">
+          {i18n('pages.sign-in.subtitulo')}
+        </Typography>
 
         <FormProvider {...form}>
           <form
@@ -66,7 +71,11 @@ export function SignInPage() {
               rules={validators.required()}
             />
 
-            {serverError && <p className="text-sm text-destructive">{serverError}</p>}
+            {serverError && (
+              <Typography variant="body" className={PALETTE.red.text}>
+                {serverError}
+              </Typography>
+            )}
 
             <Button type="submit" variant="filled" color="blue" disabled={signIn.isPending}>
               {signIn.isPending
@@ -76,16 +85,16 @@ export function SignInPage() {
           </form>
         </FormProvider>
 
-        <p className="mt-6 text-center text-sm text-muted-foreground">
+        <Typography variant="subtitle" className="mt-6 text-center">
           {i18n('pages.sign-in.nao-tem-conta')}{' '}
           <Link
             to="/$lang/sign-up"
             params={{ lang }}
-            className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+            className={cn('font-medium hover:underline', PALETTE.blue.text)}
           >
             {i18n('pages.sign-in.link-criar-conta')}
           </Link>
-        </p>
+        </Typography>
       </div>
     </main>
   )

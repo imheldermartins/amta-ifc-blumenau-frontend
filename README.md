@@ -90,7 +90,7 @@ A resolução é centralizada em [connection.ts](src/lib/connection.ts):
 
 ### Como testar a conexão socket
 
-1. **Pela UI**: logado, abra `/pt-br/app` — o card "Socket.io" mostra o
+1. **Pela UI**: logado, abra `/pt-br/app` — o painel "Socket.io" mostra o
    status ao vivo. "Conectado" + "Conexões ativas: N" = handshake autenticado
    ok. Digite algo e clique "Enviar echo": a resposta volta carimbada com o
    seu userId (extraído do JWT no servidor).
@@ -168,16 +168,37 @@ O passo a passo também está comentado no topo de `src/lib/i18n.ts`.
 
 ## Tema e paleta
 
-- `src/index.css` — variáveis do tema (base zinc): `background` (zinc-100 /
-  zinc-950), `contrast` (zinc-200 / zinc-800), `divider` (zinc-300 / zinc-700)
-  e texto (zinc-900 / zinc-100). Dark mode por classe `.dark` na raiz.
-- `src/lib/theme.ts` — os mesmos tokens como classes utilitárias prontas.
-- `src/lib/palette.ts` — cores de destaque do projeto (`blue`, `red`, `yellow`,
-  `orange`, `purple`, `green`, `pink`) com classes literais (Tailwind não
-  compila classe montada em runtime) e helpers `paletteBgText` /
-  `paletteBorderText`.
-- `src/components/Button.tsx` — variantes `filled` e `outlined`, cores da
-  paleta.
+- [index.css](src/index.css) implementa **só a base** — nada de token
+  por-componente:
+  - `background` (zinc-100 / zinc-950), `contrast` (zinc-200 / zinc-800),
+    `divider` (zinc-300 / zinc-700) e `foreground` (zinc-900 / zinc-100);
+  - os valores vêm da paleta do **próprio Tailwind** via `theme()` — nenhum
+    literal oklch escrito à mão;
+  - `rounded` (sem sufixo) é o raio padrão do projeto e vale `rounded-lg`;
+  - dark mode por classe `.dark` na raiz; borda sem cor explícita usa o
+    `divider` por padrão (`@layer base`).
+  Componentes compõem a partir disso: `bg-contrast`, `border-divider`,
+  `rounded`, ...
+- [theme.ts](src/lib/theme.ts) — os mesmos tokens como classes utilitárias
+  prontas + a persistência do tema (localStorage).
+- [palette.ts](src/lib/palette.ts) — cores de destaque com chaves semânticas
+  mapeando hues do Tailwind: `red → rose`, `blue → blue`, `purple → violet`,
+  `green → emerald`. Regra de tema: tom `-300` no light e `-500` no dark
+  (texto sobre fundo colorido é sempre `zinc-950`; texto NA cor usa
+  `-600`/`-400` para leitura). Classes literais (Tailwind não compila classe
+  montada em runtime) e helpers `paletteBgText` / `paletteBorderText`.
+- [Button.tsx](src/components/Button.tsx) — variantes `filled` e `outlined`,
+  cores da paleta.
+- [Typography.tsx](src/components/Typography.tsx) — texto padronizado com
+  variants (`h1`, `h2`, `h3`, `subtitle`, `body`, `caption`) e prop `as`
+  para trocar a tag mantendo o estilo. Todo texto de página passa por ele
+  (o conteúdo continua vindo do i18n).
+
+> Nota: não há tokens de cor por-componente — só a base acima. Um elemento
+> tipo painel é só composição de utilitários, ex.:
+> `rounded border border-divider bg-contrast p-6`. Se um dia rodar
+> `npx shadcn add`, o componente virá esperando tokens que aqui não existem
+> (`--primary`, `--muted`, ...); adapte as classes dele para esta base.
 
 ## Convenções
 

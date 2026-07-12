@@ -2,6 +2,7 @@ import type { ComponentProps } from 'react'
 import { useFormContext, type RegisterOptions } from 'react-hook-form'
 
 import { applyMask, type MaskName } from '@/lib/masks'
+import { PALETTE } from '@/lib/palette'
 import { cn } from '@/lib/utils'
 
 export interface TextFieldProps extends Omit<ComponentProps<'input'>, 'name'> {
@@ -50,15 +51,15 @@ export function TextField({ label, name, mask, rules, className, onChange, ...pr
         }}
         aria-invalid={fieldError ? true : undefined}
         className={cn(
-          'h-10 rounded-lg border border-divider bg-background px-3 text-sm font-normal',
-          'placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2',
-          'focus-visible:ring-ring',
-          fieldError && 'border-destructive focus-visible:ring-destructive',
+          'h-10 rounded border border-divider bg-background px-3 text-sm font-normal',
+          'placeholder:text-zinc-500 dark:placeholder:text-zinc-400',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-divider',
+          fieldError && cn(PALETTE.red.border, 'focus-visible:ring-rose-300 dark:focus-visible:ring-rose-500'),
           className,
         )}
       />
       {typeof fieldError?.message === 'string' && (
-        <span role="alert" className="text-xs font-normal text-destructive">
+        <span role="alert" className={cn('text-xs font-normal', PALETTE.red.text)}>
           {fieldError.message}
         </span>
       )}
