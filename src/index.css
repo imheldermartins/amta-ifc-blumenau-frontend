@@ -1,0 +1,101 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Tema do Cub's — base zinc (espelhado em src/lib/theme.ts):
+ *   background  → zinc-100 (light) / zinc-950 (dark)
+ *   contrast    → zinc-200 (light) / zinc-800 (dark)  [superfícies: cards, inputs]
+ *   divider     → zinc-300 (light) / zinc-700 (dark)
+ *   foreground  → zinc-900 (light) / zinc-100 (dark)  [texto]
+ * Os valores oklch abaixo são os da paleta zinc do Tailwind v4.
+ */
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(0.967 0.001 286.375); /* zinc-100 */
+  --foreground: oklch(0.21 0.006 285.885); /* zinc-900 */
+  --contrast: oklch(0.92 0.004 286.32); /* zinc-200 */
+  --divider: oklch(0.871 0.006 286.286); /* zinc-300 */
+
+  --card: oklch(0.92 0.004 286.32); /* zinc-200 (contrast) */
+  --card-foreground: oklch(0.21 0.006 285.885); /* zinc-900 */
+  --popover: oklch(0.92 0.004 286.32); /* zinc-200 (contrast) */
+  --popover-foreground: oklch(0.21 0.006 285.885); /* zinc-900 */
+  --primary: oklch(0.21 0.006 285.885); /* zinc-900 */
+  --primary-foreground: oklch(0.985 0 0); /* zinc-50 */
+  --secondary: oklch(0.92 0.004 286.32); /* zinc-200 */
+  --secondary-foreground: oklch(0.21 0.006 285.885); /* zinc-900 */
+  --muted: oklch(0.92 0.004 286.32); /* zinc-200 */
+  --muted-foreground: oklch(0.552 0.016 285.938); /* zinc-500 */
+  --accent: oklch(0.92 0.004 286.32); /* zinc-200 */
+  --accent-foreground: oklch(0.21 0.006 285.885); /* zinc-900 */
+  --destructive: oklch(0.577 0.245 27.325); /* red-600 */
+  --destructive-foreground: oklch(0.985 0 0); /* zinc-50 */
+  --border: oklch(0.871 0.006 286.286); /* zinc-300 (divider) */
+  --input: oklch(0.871 0.006 286.286); /* zinc-300 (divider) */
+  --ring: oklch(0.705 0.015 286.067); /* zinc-400 */
+}
+
+.dark {
+  --background: oklch(0.141 0.005 285.823); /* zinc-950 */
+  --foreground: oklch(0.967 0.001 286.375); /* zinc-100 */
+  --contrast: oklch(0.274 0.006 286.033); /* zinc-800 */
+  --divider: oklch(0.37 0.013 285.805); /* zinc-700 */
+
+  --card: oklch(0.274 0.006 286.033); /* zinc-800 (contrast) */
+  --card-foreground: oklch(0.967 0.001 286.375); /* zinc-100 */
+  --popover: oklch(0.274 0.006 286.033); /* zinc-800 (contrast) */
+  --popover-foreground: oklch(0.967 0.001 286.375); /* zinc-100 */
+  --primary: oklch(0.967 0.001 286.375); /* zinc-100 */
+  --primary-foreground: oklch(0.21 0.006 285.885); /* zinc-900 */
+  --secondary: oklch(0.274 0.006 286.033); /* zinc-800 */
+  --secondary-foreground: oklch(0.967 0.001 286.375); /* zinc-100 */
+  --muted: oklch(0.274 0.006 286.033); /* zinc-800 */
+  --muted-foreground: oklch(0.705 0.015 286.067); /* zinc-400 */
+  --accent: oklch(0.274 0.006 286.033); /* zinc-800 */
+  --accent-foreground: oklch(0.967 0.001 286.375); /* zinc-100 */
+  --destructive: oklch(0.704 0.191 22.216); /* red-400 */
+  --destructive-foreground: oklch(0.985 0 0); /* zinc-50 */
+  --border: oklch(0.37 0.013 285.805); /* zinc-700 (divider) */
+  --input: oklch(0.37 0.013 285.805); /* zinc-700 (divider) */
+  --ring: oklch(0.552 0.016 285.938); /* zinc-500 */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-contrast: var(--contrast);
+  --color-divider: var(--divider);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

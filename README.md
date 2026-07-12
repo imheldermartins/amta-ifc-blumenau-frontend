@@ -1,0 +1,190 @@
+# Cub's — Frontend
+
+Frontend do Cub's construído com **React 19 + TypeScript + Vite**, usando
+**TanStack Router** (file-based routing), **TanStack Query**, **Tailwind CSS v4**
+e infraestrutura do **shadcn/ui**.
+
+## Rodando
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # typecheck (tsc -b) + build de produção
+npm run lint       # oxlint
+```
+
+O sign-in/sign-up falam com o **backend do Cub's** (`cubs-backend`, Express +
+JWT + bcrypt), que por sua vez usa o **rqlite** como banco. A cadeia é:
+
+```
+frontend (:5173)  ->  cubs-backend (:3000)  ->  rqlite (:8000)
+```
+
+Em dev, as chamadas do frontend vão para `/api/...` e o Vite proxeia para
+`http://localhost:3000`. Para o fluxo de auth funcionar, o backend precisa
+estar no ar (no repo `cubs-backend`): suba o rqlite (`docker compose up -d`
+em `docker/`), rode as migrations (`npm run migrate`) e o servidor
+(`npm run dev`, porta 3000). Para apontar o frontend direto para outro
+backend, copie `.env.example` para `.env` e defina `VITE_CUBS_API_URL`.
+
+### Rotas de auth consumidas (backend)
+
+- `POST /auth/register` `{ name?, email, password }` → `201 { user, tokens }`
+- `POST /auth/login` `{ email, password }` → `200 { accessToken, refreshToken }`
+- `POST /auth/refresh` `{ refreshToken }` → `200 { accessToken, refreshToken }`
+- `GET /users` (Bearer) → `[user]` — o próprio usuário, escopado ao token
+
+O par de tokens é guardado em `localStorage` ([tokenStore](src/services/tokenStore.ts));
+o [ApiService](src/services/ApiService.ts) anexa o access token em toda chamada
+e, num 401, tenta renovar via `/auth/refresh` uma vez antes de refazer a
+requisição. O refresh é *single-flight*: N requisições com 401 simultâneos
+aguardam a mesma chamada de refresh (o token não é rotacionado N vezes).
+
+## Formulários (react-hook-form)
+
+- Os inputs se registram sozinhos via contexto: envolva o form em
+  `<FormProvider {...form}>` e use o [TextField](src/components/TextField.tsx)
+  com `name` — estado, validação e mensagem de erro vêm do próprio campo,
+  sem `useState` manual. Use `noValidate` no `<form>` (a validação é do RHF).
+- **Máscaras** ([src/lib/masks.ts](src/lib/masks.ts)): `phone-br`, `cpf`,
+  `cep`, `date` e `currency` (BRL por enquanto; `currency-<codigo>` quando
+  houver outras moedas — os dígitos são tratados como centavos e formatados
+  via `Intl.NumberFormat`; `unmaskCurrencyCents` faz o caminho de volta).
+  Passe `mask="cpf"` no TextField; o valor é re-formatado a cada tecla,
+  antes do RHF ler o evento.
+- **Validators** ([src/lib/validators.ts](src/lib/validators.ts)): `required`,
+  `email`, `minLength(n)`, `phoneBr`, `cpf` (com dígito verificador) — as
+  mensagens de erro já vêm definidas (chaves `validation.*` do i18n).
+  Combine com `combineRules(validators.required(), validators.cpf())`.
+- Exemplo vivo em `/app` ([FormExampleSection](src/pages/app/sections/FormExampleSection.tsx)):
+  máscaras, validação e prévia ao vivo com `watch()`.
+
+## Conexões (API × Socket)
+
+**A API HTTP e o socket.io são o MESMO servidor** — o socket.io pega carona
+no `http.Server` do express (mesma origem/porta); só muda o protocolo da
+conversa: a API fala HTTP puro, e o socket começa em HTTP e sofre upgrade
+para WebSocket no path `/socket.io` (por isso a URL do socket usa
+`http://`, não `ws://` — o upgrade acontece por dentro).
+
+A resolução é centralizada em [connection.ts](src/lib/connection.ts):
+
+1. `VITE_CUBS_SOCKET_URL` — só se o socket um dia morar em outro servidor;
+2. `VITE_CUBS_API_URL` — origem do backend; o socket **herda** daqui;
+3. sem env nenhuma — proxy do Vite em dev (`/api` e `/socket.io` → `:5000`).
+
+## Socket.io
+
+- [SocketService](src/services/SocketService.ts): conexão tipada
+  (`ServerToClientEvents`/`ClientToServerEvents`) e autenticada — o handshake
+  envia o access token, que o backend valida com o mesmo JWT das rotas HTTP.
+  Se o handshake tomar "Não autorizado" (access token expirado), o client
+  renova o par via `/auth/refresh` e reconecta sozinho.
+- [useSocket](src/hooks/useSocket.ts): conecta enquanto o componente estiver
+  montado (acquire/release) e expõe status + mensagem de erro ao vivo.
+- Exemplo vivo em `/app` ([SocketExampleSection](src/pages/app/sections/SocketExampleSection.tsx)):
+  status da conexão, presença (`presence:count`) e echo de ida e volta
+  (`echo:send` → `echo:reply`). O contrato de eventos é espelhado em
+  `cubs-backend/src/core/socket/socket-server.ts` — ao criar um evento novo,
+  atualize os dois lados.
+
+### Como testar a conexão socket
+
+1. **Pela UI**: logado, abra `/pt-br/app` — o card "Socket.io" mostra o
+   status ao vivo. "Conectado" + "Conexões ativas: N" = handshake autenticado
+   ok. Digite algo e clique "Enviar echo": a resposta volta carimbada com o
+   seu userId (extraído do JWT no servidor).
+2. **Pelo console do browser (F12)**: os logs padronizados `[cubs:socket]`
+   contam a história — falha com causa e dica, renovação de token e
+   reconexão. Na aba Network → filtro WS dá para ver o frame de upgrade e as
+   mensagens trafegando.
+3. **Sem browser** (o handshake engine.io responde por HTTP puro):
+   `curl "http://localhost:5000/socket.io/?EIO=4&transport=polling"` —
+   HTTP 200 com um JSON `{"sid":...}` prova que o servidor socket está de pé.
+4. **Falhas comuns**: backend fora do ar → "websocket error" (o socket.io
+   re-tenta sozinho); token expirado → "Não autorizado" (o client renova e
+   reconecta); porta/env errada → confira `VITE_CUBS_API_URL` no `.env`.
+
+## Tratamento de erros
+
+Toda falha de serviço vira um [AppError](src/lib/errors.ts) com `scope`
+(`api`/`socket`/`auth`) e é logada num formato único:
+
+```
+[cubs:api] POST /auth/login → 401: Credenciais inválidas
+[cubs:socket] Falha ao conectar em http://localhost:5000: Não autorizado. Verifique...
+```
+
+O `ApiService` rejeita sempre `AppError` (com `status` HTTP normalizado) —
+consumidores tratam `error.status`, nunca o erro cru do axios.
+
+## Tema (light/dark)
+
+Preferência persistida em `localStorage` (`cubs.theme`), aplicada como classe
+`.dark` no `<html>`. Um script inline no [index.html](index.html) aplica o
+tema salvo antes do React montar (sem flash); sem preferência salva, vale o
+`prefers-color-scheme` do sistema. Toggle: [ThemeToggle](src/components/ThemeToggle.tsx)
+(no header do `/app` e flutuante nas páginas públicas), estado via
+[useTheme](src/hooks/useTheme.ts) e lógica em [theme.ts](src/lib/theme.ts).
+
+## Rotas
+
+O idioma vem como slug na URL (`/pt-br/...`). A raiz `/` redireciona para o
+idioma padrão.
+
+| Rota | Acesso | Página |
+| --- | --- | --- |
+| `/$lang/` | pública | Rota inicial (`HomePage`) |
+| `/$lang/sign-in` | pública (deslogado) | `SignInPage` |
+| `/$lang/sign-up` | pública (deslogado) | `SignUpPage` |
+| `/$lang/app` | privada | `AppLayout` com `<Outlet />` para as rotas internas |
+
+Guards (em `beforeLoad`):
+
+- `_public` (sign-in/sign-up): usuário autenticado é redirecionado para `/$lang/app`.
+- `app`: sem sessão, redireciona para `/$lang/sign-in`.
+
+Os arquivos de rota ficam em `src/routes/` (a árvore `src/routeTree.gen.ts` é
+gerada pelo plugin do TanStack Router — não editar). As visualizações ficam em
+`src/pages/<pagina>/NomePage.tsx`; os arquivos de rota só fazem a ligação.
+
+## i18n
+
+- Todo conteúdo estático de tela passa por `i18n('chave')` — **nada de string
+  solta em componente**.
+- Chaves hierárquicas: página / seção / componente. Ex.:
+  `i18n('pages.sign-in.entre-seja-bem-vindo')` → `"Entre Seja Bem-Vindo!"`.
+- Traduções em `src/locales/<slug>.json` (chave-valor), ex.: `pt-br.json`.
+
+### Como adicionar um novo idioma
+
+1. Crie `src/locales/<slug>.json` (ex.: `en-us.json`) copiando a estrutura de
+   chaves de `pt-br.json`.
+2. Registre-o em `LANGUAGES` no `src/lib/i18n.ts` (slug da URL, locale BCP-47,
+   label e o JSON importado).
+3. Pronto: `/en-us/...` passa a funcionar e `i18n()` resolve no idioma novo.
+
+O passo a passo também está comentado no topo de `src/lib/i18n.ts`.
+
+## Tema e paleta
+
+- `src/index.css` — variáveis do tema (base zinc): `background` (zinc-100 /
+  zinc-950), `contrast` (zinc-200 / zinc-800), `divider` (zinc-300 / zinc-700)
+  e texto (zinc-900 / zinc-100). Dark mode por classe `.dark` na raiz.
+- `src/lib/theme.ts` — os mesmos tokens como classes utilitárias prontas.
+- `src/lib/palette.ts` — cores de destaque do projeto (`blue`, `red`, `yellow`,
+  `orange`, `purple`, `green`, `pink`) com classes literais (Tailwind não
+  compila classe montada em runtime) e helpers `paletteBgText` /
+  `paletteBorderText`.
+- `src/components/Button.tsx` — variantes `filled` e `outlined`, cores da
+  paleta.
+
+## Convenções
+
+- Rotas: nomes padrão em kebab-case (`sign-in`, `sign-up`, ...).
+- Funções utilitárias: `camelCase`.
+- Sections, ClassServices e Components: `PascalCase` (`ApiService`,
+  `SignUpPage`, ...).
+- Dependências sempre com versão exata (`npm install --save-exact`).
+- Composição de classes com o util `cn` (`clsx` + `tailwind-merge`) de
+  `src/lib/utils.ts`.

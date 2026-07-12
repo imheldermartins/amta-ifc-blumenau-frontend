@@ -1,0 +1,90 @@
+{
+  "common": {
+    "app-name": "Cub's",
+    "carregando": "Carregando...",
+    "sair": "Sair",
+    "mudar-tema-claro": "Mudar para o tema claro",
+    "mudar-tema-escuro": "Mudar para o tema escuro"
+  },
+  "validation": {
+    "campo-obrigatorio": "Campo obrigatório.",
+    "email-invalido": "Informe um e-mail válido.",
+    "minimo-caracteres": "Mínimo de {{count}} caracteres.",
+    "telefone-invalido": "Informe um telefone válido com DDD.",
+    "cpf-invalido": "CPF inválido."
+  },
+  "pages": {
+    "home": {
+      "bem-vindo-ao-cubs": "Bem-vindo ao Cub's!",
+      "descricao": "Sua plataforma está sendo construída. Entre ou crie uma conta para começar.",
+      "entrar": "Entrar",
+      "criar-conta": "Criar conta"
+    },
+    "sign-in": {
+      "entre-seja-bem-vindo": "Entre Seja Bem-Vindo!",
+      "subtitulo": "Acesse sua conta para continuar.",
+      "campo-email": "E-mail",
+      "campo-email-placeholder": "voce@exemplo.com",
+      "campo-senha": "Senha",
+      "campo-senha-placeholder": "Sua senha",
+      "botao-entrar": "Entrar",
+      "entrando": "Entrando...",
+      "nao-tem-conta": "Não tem uma conta?",
+      "link-criar-conta": "Criar conta",
+      "erro-credenciais-invalidas": "E-mail ou senha inválidos.",
+      "erro-generico": "Não foi possível entrar. Tente novamente."
+    },
+    "sign-up": {
+      "crie-sua-conta": "Crie sua conta",
+      "subtitulo": "Leva menos de um minuto.",
+      "campo-nome": "Nome",
+      "campo-nome-placeholder": "Seu nome",
+      "campo-email": "E-mail",
+      "campo-email-placeholder": "voce@exemplo.com",
+      "campo-senha": "Senha",
+      "campo-senha-placeholder": "Crie uma senha",
+      "botao-criar-conta": "Criar conta",
+      "criando-conta": "Criando conta...",
+      "ja-tem-conta": "Já tem uma conta?",
+      "link-entrar": "Entrar",
+      "erro-email-em-uso": "Este e-mail já está em uso.",
+      "erro-generico": "Não foi possível criar a conta. Tente novamente."
+    },
+    "app": {
+      "ola-mundo": "Hello world",
+      "descricao-outlet": "Esta área é renderizada dentro do Outlet da rota /app.",
+      "exemplo-formulario": {
+        "titulo": "Formulário (react-hook-form)",
+        "descricao": "Máscaras, validação com mensagens prontas e prévia ao vivo via watch().",
+        "campo-nome": "Nome",
+        "campo-nome-placeholder": "Como devemos te chamar?",
+        "campo-telefone": "Telefone",
+        "campo-telefone-placeholder": "(11) 98765-4321",
+        "campo-cpf": "CPF",
+        "campo-cpf-placeholder": "000.000.000-00",
+        "campo-preco": "Preço",
+        "campo-preco-placeholder": "R$ 0,00",
+        "botao-salvar": "Salvar",
+        "previa-titulo": "Prévia ao vivo (watch)",
+        "previa-vazio": "—",
+        "dados-enviados": "Enviado com sucesso:"
+      },
+      "exemplo-socket": {
+        "titulo": "Socket.io",
+        "descricao": "Conexão autenticada com o backend — o handshake envia o access token.",
+        "status-conectado": "Conectado",
+        "status-conectando": "Conectando...",
+        "status-desconectado": "Desconectado",
+        "status-erro": "Falha na conexão",
+        "erro-detalhe": "Detalhe: {{message}}",
+        "erro-dica": "Confira se o backend está de pé e as envs VITE_CUBS_API_URL / VITE_CUBS_SOCKET_URL.",
+        "conexoes-ativas": "Conexões ativas: {{count}}",
+        "campo-mensagem": "Mensagem",
+        "campo-mensagem-placeholder": "Digite algo para o servidor ecoar",
+        "botao-enviar": "Enviar echo",
+        "resposta": "Resposta do servidor:",
+        "sem-resposta": "Nenhuma resposta ainda."
+      }
+    }
+  }
+}
