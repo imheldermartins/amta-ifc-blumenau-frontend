@@ -84,7 +84,8 @@
         "botao-enviar": "Enviar echo",
         "resposta": "Resposta do servidor:",
         "sem-resposta": "Nenhuma resposta ainda."
-      }
+      },
+      "headline": "Area de Trabalho"
     }
   }
 }

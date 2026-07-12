@@ -9,16 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LangRouteImport } from './routes/$lang'
+import { Route as LangRouteRouteImport } from './routes/$lang/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LangIndexRouteImport } from './routes/$lang.index'
-import { Route as LangAppRouteImport } from './routes/$lang.app'
-import { Route as LangPublicRouteImport } from './routes/$lang._public'
-import { Route as LangAppIndexRouteImport } from './routes/$lang.app.index'
-import { Route as LangPublicSignUpRouteImport } from './routes/$lang._public.sign-up'
-import { Route as LangPublicSignInRouteImport } from './routes/$lang._public.sign-in'
+import { Route as LangIndexRouteImport } from './routes/$lang/index'
+import { Route as LangAppRouteRouteImport } from './routes/$lang/app/route'
+import { Route as LangPublicRouteRouteImport } from './routes/$lang/_public/route'
+import { Route as LangAppIndexRouteImport } from './routes/$lang/app/index'
+import { Route as LangPublicSignUpRouteImport } from './routes/$lang/_public/sign-up'
+import { Route as LangPublicSignInRouteImport } from './routes/$lang/_public/sign-in'
 
-const LangRoute = LangRouteImport.update({
+const LangRouteRoute = LangRouteRouteImport.update({
   id: '/$lang',
   path: '/$lang',
   getParentRoute: () => rootRouteImport,
@@ -31,37 +31,37 @@ const IndexRoute = IndexRouteImport.update({
 const LangIndexRoute = LangIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LangRoute,
+  getParentRoute: () => LangRouteRoute,
 } as any)
-const LangAppRoute = LangAppRouteImport.update({
+const LangAppRouteRoute = LangAppRouteRouteImport.update({
   id: '/app',
   path: '/app',
-  getParentRoute: () => LangRoute,
+  getParentRoute: () => LangRouteRoute,
 } as any)
-const LangPublicRoute = LangPublicRouteImport.update({
+const LangPublicRouteRoute = LangPublicRouteRouteImport.update({
   id: '/_public',
-  getParentRoute: () => LangRoute,
+  getParentRoute: () => LangRouteRoute,
 } as any)
 const LangAppIndexRoute = LangAppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LangAppRoute,
+  getParentRoute: () => LangAppRouteRoute,
 } as any)
 const LangPublicSignUpRoute = LangPublicSignUpRouteImport.update({
   id: '/sign-up',
   path: '/sign-up',
-  getParentRoute: () => LangPublicRoute,
+  getParentRoute: () => LangPublicRouteRoute,
 } as any)
 const LangPublicSignInRoute = LangPublicSignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
-  getParentRoute: () => LangPublicRoute,
+  getParentRoute: () => LangPublicRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$lang': typeof LangRouteWithChildren
-  '/$lang/app': typeof LangAppRouteWithChildren
+  '/$lang': typeof LangRouteRouteWithChildren
+  '/$lang/app': typeof LangAppRouteRouteWithChildren
   '/$lang/': typeof LangIndexRoute
   '/$lang/sign-in': typeof LangPublicSignInRoute
   '/$lang/sign-up': typeof LangPublicSignUpRoute
@@ -77,9 +77,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$lang': typeof LangRouteWithChildren
-  '/$lang/_public': typeof LangPublicRouteWithChildren
-  '/$lang/app': typeof LangAppRouteWithChildren
+  '/$lang': typeof LangRouteRouteWithChildren
+  '/$lang/_public': typeof LangPublicRouteRouteWithChildren
+  '/$lang/app': typeof LangAppRouteRouteWithChildren
   '/$lang/': typeof LangIndexRoute
   '/$lang/_public/sign-in': typeof LangPublicSignInRoute
   '/$lang/_public/sign-up': typeof LangPublicSignUpRoute
@@ -111,7 +111,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LangRoute: typeof LangRouteWithChildren
+  LangRouteRoute: typeof LangRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -120,7 +120,7 @@ declare module '@tanstack/react-router' {
       id: '/$lang'
       path: '/$lang'
       fullPath: '/$lang'
-      preLoaderRoute: typeof LangRouteImport
+      preLoaderRoute: typeof LangRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -135,88 +135,91 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/$lang/'
       preLoaderRoute: typeof LangIndexRouteImport
-      parentRoute: typeof LangRoute
+      parentRoute: typeof LangRouteRoute
     }
     '/$lang/app': {
       id: '/$lang/app'
       path: '/app'
       fullPath: '/$lang/app'
-      preLoaderRoute: typeof LangAppRouteImport
-      parentRoute: typeof LangRoute
+      preLoaderRoute: typeof LangAppRouteRouteImport
+      parentRoute: typeof LangRouteRoute
     }
     '/$lang/_public': {
       id: '/$lang/_public'
       path: ''
       fullPath: '/$lang'
-      preLoaderRoute: typeof LangPublicRouteImport
-      parentRoute: typeof LangRoute
+      preLoaderRoute: typeof LangPublicRouteRouteImport
+      parentRoute: typeof LangRouteRoute
     }
     '/$lang/app/': {
       id: '/$lang/app/'
       path: '/'
       fullPath: '/$lang/app/'
       preLoaderRoute: typeof LangAppIndexRouteImport
-      parentRoute: typeof LangAppRoute
+      parentRoute: typeof LangAppRouteRoute
     }
     '/$lang/_public/sign-up': {
       id: '/$lang/_public/sign-up'
       path: '/sign-up'
       fullPath: '/$lang/sign-up'
       preLoaderRoute: typeof LangPublicSignUpRouteImport
-      parentRoute: typeof LangPublicRoute
+      parentRoute: typeof LangPublicRouteRoute
     }
     '/$lang/_public/sign-in': {
       id: '/$lang/_public/sign-in'
       path: '/sign-in'
       fullPath: '/$lang/sign-in'
       preLoaderRoute: typeof LangPublicSignInRouteImport
-      parentRoute: typeof LangPublicRoute
+      parentRoute: typeof LangPublicRouteRoute
     }
   }
 }
 
-interface LangPublicRouteChildren {
+interface LangPublicRouteRouteChildren {
   LangPublicSignInRoute: typeof LangPublicSignInRoute
   LangPublicSignUpRoute: typeof LangPublicSignUpRoute
 }
 
-const LangPublicRouteChildren: LangPublicRouteChildren = {
+const LangPublicRouteRouteChildren: LangPublicRouteRouteChildren = {
   LangPublicSignInRoute: LangPublicSignInRoute,
   LangPublicSignUpRoute: LangPublicSignUpRoute,
 }
 
-const LangPublicRouteWithChildren = LangPublicRoute._addFileChildren(
-  LangPublicRouteChildren,
+const LangPublicRouteRouteWithChildren = LangPublicRouteRoute._addFileChildren(
+  LangPublicRouteRouteChildren,
 )
 
-interface LangAppRouteChildren {
+interface LangAppRouteRouteChildren {
   LangAppIndexRoute: typeof LangAppIndexRoute
 }
 
-const LangAppRouteChildren: LangAppRouteChildren = {
+const LangAppRouteRouteChildren: LangAppRouteRouteChildren = {
   LangAppIndexRoute: LangAppIndexRoute,
 }
 
-const LangAppRouteWithChildren =
-  LangAppRoute._addFileChildren(LangAppRouteChildren)
+const LangAppRouteRouteWithChildren = LangAppRouteRoute._addFileChildren(
+  LangAppRouteRouteChildren,
+)
 
-interface LangRouteChildren {
-  LangPublicRoute: typeof LangPublicRouteWithChildren
-  LangAppRoute: typeof LangAppRouteWithChildren
+interface LangRouteRouteChildren {
+  LangPublicRouteRoute: typeof LangPublicRouteRouteWithChildren
+  LangAppRouteRoute: typeof LangAppRouteRouteWithChildren
   LangIndexRoute: typeof LangIndexRoute
 }
 
-const LangRouteChildren: LangRouteChildren = {
-  LangPublicRoute: LangPublicRouteWithChildren,
-  LangAppRoute: LangAppRouteWithChildren,
+const LangRouteRouteChildren: LangRouteRouteChildren = {
+  LangPublicRouteRoute: LangPublicRouteRouteWithChildren,
+  LangAppRouteRoute: LangAppRouteRouteWithChildren,
   LangIndexRoute: LangIndexRoute,
 }
 
-const LangRouteWithChildren = LangRoute._addFileChildren(LangRouteChildren)
+const LangRouteRouteWithChildren = LangRouteRoute._addFileChildren(
+  LangRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LangRoute: LangRouteWithChildren,
+  LangRouteRoute: LangRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

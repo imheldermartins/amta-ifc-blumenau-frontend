@@ -6,11 +6,22 @@
 /*
  * Tema base do Cub's — SÓ os tokens fundamentais (zinc do próprio Tailwind):
  *
- *   background  → zinc-100 (light) / zinc-950 (dark)
+ *   background  → zinc-100 (light) / zinc-900 (dark)
  *   contrast    → zinc-200 (light) / zinc-800 (dark)   [superfícies]
+ *   active      → zinc-300 (light) / zinc-700 (dark)   [hover/seleção]
  *   divider     → zinc-300 (light) / zinc-700 (dark)   [bordas padrão]
  *   foreground  → zinc-900 (light) / zinc-100 (dark)   [texto]
  *   rounded     → raio padrão do projeto = rounded-lg
+ *
+ * `active` tem o MESMO tom do `divider` de propósito (hoje), mas é um token
+ * separado porque a intenção é outra (fundo de item ativo/hover): dá pra
+ * ajustar um sem tocar no outro depois.
+ *
+ * COMO ADICIONAR UM TOKEN DE COR (2 passos):
+ *   1. defina o valor (light + dark) em :root e .dark abaixo;
+ *   2. registre em @theme inline (`--color-<nome>: var(--<nome>)`).
+ * É o passo 2 que faz o Tailwind GERAR as classes bg-<nome>/text-<nome>/
+ * border-<nome>/hover:bg-<nome>. Sem ele, `bg-<nome>` não existe.
  *
  * Os valores vêm da paleta do Tailwind via theme() — nada de literal oklch.
  * Não há tokens por-componente: cada componente compõe a partir desta base
@@ -20,20 +31,31 @@
 :root {
   --background: theme(--color-zinc-100);
   --contrast: theme(--color-zinc-200);
+  --active: theme(--color-zinc-300);
   --divider: theme(--color-zinc-300);
   --foreground: theme(--color-zinc-900);
 }
 
 .dark {
-  --background: theme(--color-zinc-950);
+  --background: theme(--color-zinc-900);
   --contrast: theme(--color-zinc-800);
+  --active: theme(--color-zinc-700);
   --divider: theme(--color-zinc-700);
   --foreground: theme(--color-zinc-100);
+}
+
+/* Fonte padrão do projeto. Sobrescrever --font-sans faz TODO o app herdar
+   Noto Sans (o preflight do Tailwind aponta o font-family do <html> para cá,
+   e o utilitário font-sans também). A fonte é carregada em src/main.tsx via
+   @fontsource-variable/noto-sans. */
+@theme {
+  --font-sans: 'Noto Sans Variable', ui-sans-serif, system-ui, sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-contrast: var(--contrast);
+  --color-active: var(--active);
   --color-divider: var(--divider);
   --color-foreground: var(--foreground);
 }

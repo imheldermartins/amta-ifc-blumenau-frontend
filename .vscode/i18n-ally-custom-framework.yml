@@ -1,0 +1,24 @@
+# Ensina o i18n Ally a reconhecer o wrapper de tradução do Cub's.
+#
+# A extensão só anota funções de frameworks conhecidos (t(), i18next.t(), ...).
+# O nosso utilitário se chama i18n('chave') — src/lib/i18n.ts — então o padrão
+# precisa ser registrado aqui. Requer "custom" em i18n-ally.enabledFrameworks
+# (ver .vscode/settings.json).
+
+languageIds:
+  - javascript
+  - typescript
+  - javascriptreact
+  - typescriptreact
+
+# Onde uma CHAVE de tradução aparece no código: i18n('...'), i18n("..."), i18n(`...`)
+usageMatchRegex:
+  - "[^\\w\\d]i18n\\(['\"`]({key})['\"`]"
+
+# Como escrever a chamada quando usar o "extract text" da extensão.
+refactorTemplates:
+  - "i18n('$1')"
+  - "{i18n('$1')}"
+
+# false = os frameworks detectados (react-i18next) continuam valendo também.
+monopoly: false

@@ -1,25 +1,24 @@
 /**
- * Tokens de tema do Cub's (base zinc), em pares light/dark.
+ * Aliases de classe prontos para compor com `cn`, apontando para os tokens
+ * de cor registrados em `src/index.css`.
  *
- * - background: zinc-100 (light) / zinc-950 (dark)
- * - contrast:   zinc-200 (light) / zinc-800 (dark) — superfícies elevadas (painéis, inputs)
- * - divider:    zinc-300 (light) / zinc-700 (dark)
- * - text:       zinc-900 (light) / zinc-100 (dark)
- *
- * As mesmas cores existem como variáveis CSS em `src/index.css`
- * (--background, --contrast, --divider, --foreground); aqui ficam as classes
- * utilitárias prontas para compor com `cn`.
+ * FONTE ÚNICA são as variáveis CSS do index.css — como cada alias usa o
+ * utilitário do token (bg-background, bg-active, ...), mudar o valor lá
+ * reflete aqui automaticamente, sem duplicar os tons zinc. Exceção:
+ * `textMuted`, que não tem token próprio (usa zinc direto).
  */
 export const THEME = {
-  /** Fundo base da aplicação. */
-  background: 'bg-zinc-100 dark:bg-zinc-950',
-  /** Superfície de contraste (painéis, inputs). */
-  contrast: 'bg-zinc-200 dark:bg-zinc-800',
-  /** Cor de divisores/bordas neutras. */
-  divider: 'border-zinc-300 dark:border-zinc-700',
-  /** Cor padrão de texto. */
-  text: 'text-zinc-900 dark:text-zinc-100',
-  /** Texto secundário/apagado. */
+  /** Fundo base da aplicação (zinc-100 / zinc-900). */
+  background: 'bg-background',
+  /** Superfície de contraste — painéis, inputs (zinc-200 / zinc-800). */
+  contrast: 'bg-contrast',
+  /** Fundo de item ativo/hover (zinc-300 / zinc-700; mesmo tom do divider). */
+  active: 'bg-active',
+  /** Cor de divisores/bordas neutras (zinc-300 / zinc-700). */
+  divider: 'border-divider',
+  /** Cor padrão de texto (zinc-900 / zinc-100). */
+  text: 'text-foreground',
+  /** Texto secundário/apagado — sem token próprio (zinc-600 / zinc-400). */
   textMuted: 'text-zinc-600 dark:text-zinc-400',
 } as const
 

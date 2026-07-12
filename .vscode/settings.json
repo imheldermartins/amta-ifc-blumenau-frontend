@@ -1,0 +1,14 @@
+{
+  // ── i18n Ally ──────────────────────────────────────────────────────────
+  // "custom" ativa o .vscode/i18n-ally-custom-framework.yml (nosso i18n()).
+  "i18n-ally.enabledFrameworks": ["custom", "react-i18next"],
+  "i18n-ally.localesPaths": ["src/locales"],
+  // Arquivos de idioma soltos na pasta (pt-br.json), não em subpastas.
+  "i18n-ally.dirStructure": "file",
+  // Chaves aninhadas: pages.sign-in.entre-seja-bem-vindo
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.sourceLanguage": "pt-br",
+  "i18n-ally.displayLanguage": "pt-br",
+  // O "extract text" gera chaves no padrão do projeto (kebab-case).
+  "i18n-ally.extract.keygenStyle": "kebab-case"
+}

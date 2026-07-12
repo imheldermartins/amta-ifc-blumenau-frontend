@@ -144,9 +144,70 @@ Guards (em `beforeLoad`):
 - `_public` (sign-in/sign-up): usuário autenticado é redirecionado para `/$lang/app`.
 - `app`: sem sessão, redireciona para `/$lang/sign-in`.
 
-Os arquivos de rota ficam em `src/routes/` (a árvore `src/routeTree.gen.ts` é
-gerada pelo plugin do TanStack Router — não editar). As visualizações ficam em
-`src/pages/<pagina>/NomePage.tsx`; os arquivos de rota só fazem a ligação.
+### Anatomia (file-based routing, convenção de diretórios)
+
+A árvore de pastas em `src/routes/` espelha a URL — cada arquivo vira uma
+rota, gerada pelo plugin do TanStack Router:
+
+```
+src/routes/
+├── __root.tsx          → casca de TODAS as rotas (Outlet + devtools)
+├── index.tsx           → "/"            (redireciona p/ idioma padrão)
+└── $lang/              → "/$lang"       ($ = segmento dinâmico)
+    ├── route.tsx       →   layout do segmento: valida idioma, ativa i18n
+    ├── index.tsx       → "/$lang/"      (HomePage)
+    ├── _public/        →   grupo SEM url (_ = pathless layout): guard de deslogado
+    │   ├── route.tsx
+    │   ├── sign-in.tsx → "/$lang/sign-in"
+    │   └── sign-up.tsx → "/$lang/sign-up"
+    └── app/            → "/$lang/app"   (privada)
+        ├── route.tsx   →   guard de auth + AppLayout (<Outlet />)
+        └── index.tsx   → "/$lang/app/"  (AppHomePage)
+```
+
+Regras de nome:
+
+- `route.tsx` — o layout/guard do diretório (roda `beforeLoad` e rende o
+  `<Outlet />` dos filhos);
+- `index.tsx` — a rota exata do segmento (`/$lang/app/`);
+- `$param/` — segmento dinâmico (vira `useParams()`);
+- `_nome/` — agrupa filhos sob um layout **sem** aparecer na URL;
+- prefixo `-` (arquivo ou pasta) — ignorado pelo router (helpers, componentes);
+- `src/routeTree.gen.ts` — **gerado** pelo plugin (dev server ou build);
+  nunca editar na mão.
+
+As visualizações ficam em `src/pages/<pagina>/NomePage.tsx`; os arquivos de
+rota são só a ligação (guard + `component`).
+
+### Como criar uma rota
+
+Página pública `/pt-br/sobre`:
+
+1. View: `src/pages/sobre/SobrePage.tsx` (textos via `i18n()` +
+   chaves novas no `pt-br.json`).
+2. Rota: `src/routes/$lang/sobre.tsx`:
+
+   ```tsx
+   import { createFileRoute } from '@tanstack/react-router'
+   import { SobrePage } from '@/pages/sobre/SobrePage'
+
+   export const Route = createFileRoute('/$lang/sobre')({
+     component: SobrePage,
+   })
+   ```
+
+3. Com o `npm run dev` rodando, o plugin regenera a árvore sozinho (e conserta
+   o path do `createFileRoute` se você errar). Navegue com
+   `<Link to="/$lang/sobre" params={{ lang }}>`.
+
+Página privada `/pt-br/app/config`: mesmo processo, mas o arquivo vai DENTRO
+de `app/` — `src/routes/$lang/app/config.tsx` com
+`createFileRoute('/$lang/app/config')`. Ela herda o guard de auth e o layout
+do `app/route.tsx` automaticamente e renderiza no `<Outlet />` dele.
+
+Sub-área nova com guard próprio (ex.: `/admin`): crie `src/routes/$lang/admin/route.tsx`
+com o `beforeLoad` do guard + component com `<Outlet />`, e os filhos como
+arquivos dentro de `admin/`.
 
 ## i18n
 
@@ -193,6 +254,12 @@ O passo a passo também está comentado no topo de `src/lib/i18n.ts`.
   variants (`h1`, `h2`, `h3`, `subtitle`, `body`, `caption`) e prop `as`
   para trocar a tag mantendo o estilo. Todo texto de página passa por ele
   (o conteúdo continua vindo do i18n).
+- **Fonte**: **Noto Sans** (variável, 100–900), auto-hospedada via
+  `@fontsource-variable/noto-sans` (sem requisição externa). Importada em
+  [main.tsx](src/main.tsx) e apontada em `--font-sans` no `@theme` do
+  [index.css](src/index.css) — o preflight do Tailwind faz todo o app herdar.
+  Para trocar a fonte: instale outro pacote `@fontsource*`, ajuste o import e
+  a família em `--font-sans`.
 
 > Nota: não há tokens de cor por-componente — só a base acima. Um elemento
 > tipo painel é só composição de utilitários, ex.:
