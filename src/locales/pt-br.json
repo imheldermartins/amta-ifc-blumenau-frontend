@@ -7,7 +7,12 @@
     "mudar-tema-escuro": "Mudar para o tema escuro",
     "recolher-menu": "Recolher menu lateral",
     "expandir-menu": "Expandir menu lateral",
-    "modo-escuro": "Modo escuro"
+    "modo-escuro": "Modo escuro",
+    "navigation": {
+      "agenda": "Agenda",
+      "chat": "Chat",
+      "home": "Area de Trabalho"
+    }
   },
   "validation": {
     "campo-obrigatorio": "Campo obrigatório.",

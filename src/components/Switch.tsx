@@ -18,7 +18,7 @@ function SwitchView({ checked, onCheckedChange, label, disabled, className }: Sw
   return (
     <label
       className={cn(
-        'inline-flex select-none items-center gap-2 text-sm',
+        'inline-flex select-none items-center gap-2 text-sm text-nowrap whitespace-nowrap',
         disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
         className,
       )}

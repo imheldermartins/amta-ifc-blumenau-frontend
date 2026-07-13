@@ -35,40 +35,46 @@ export interface PaletteEntry {
   textOnFilled: string
   /** Borda na cor (300 light / 500 dark). */
   border: string
+  /** Sombra na cor (300 light / 500 dark). */
+  shadow: string
 }
 
 export const PALETTE: Record<PaletteColor, PaletteEntry> = {
   blue: {
-    bg: 'bg-blue-600 dark:bg-blue-500',
+    bg: 'bg-blue-500 dark:bg-blue-500',
     bgHover: 'hover:bg-blue-400 dark:hover:bg-blue-600',
     bgSoft: 'hover:bg-blue-600/25 dark:hover:bg-blue-500/20',
     text: 'text-blue-600 dark:text-blue-400',
     textOnFilled: 'text-white',
     border: 'border-blue-600 dark:border-blue-500',
+    shadow: 'shadow-xl shadow-blue-600/20 dark:shadow-blue-500/20',
   },
   red: {
-    bg: 'bg-rose-600 dark:bg-rose-500',
+    bg: 'bg-rose-500 dark:bg-rose-500',
     bgHover: 'hover:bg-rose-400 dark:hover:bg-rose-600',
     bgSoft: 'hover:bg-rose-600/25 dark:hover:bg-rose-500/20',
     text: 'text-rose-600 dark:text-rose-400',
     textOnFilled: 'text-white',
     border: 'border-rose-600 dark:border-rose-500',
+    shadow: 'shadow-xl shadow-rose-600/20 dark:shadow-rose-500/20',
   },
   purple: {
-    bg: 'bg-violet-600 dark:bg-violet-500',
+    bg: 'bg-violet-500 dark:bg-violet-500',
     bgHover: 'hover:bg-violet-400 dark:hover:bg-violet-600',
     bgSoft: 'hover:bg-violet-600/25 dark:hover:bg-violet-500/20',
     text: 'text-violet-600 dark:text-violet-400',
     textOnFilled: 'text-white',
     border: 'border-violet-600 dark:border-violet-500',
+    shadow: 'shadow-xl shadow-violet-600/20 dark:shadow-violet-500/20',
   },
   green: {
-    bg: 'bg-emerald-600 dark:bg-emerald-500',
+    bg: 'bg-emerald-500 dark:bg-emerald-500',
     bgHover: 'hover:bg-emerald-400 dark:hover:bg-emerald-600',
     bgSoft: 'hover:bg-emerald-600/25 dark:hover:bg-emerald-500/20',
     text: 'text-emerald-600 dark:text-emerald-400',
     textOnFilled: 'text-white',
     border: 'border-emerald-600 dark:border-emerald-500',
+    shadow: 'shadow-xl shadow-emerald-600/20 dark:shadow-emerald-500/20',
   },
 }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Outlet } from '@tanstack/react-router'
+import { Link, Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { Icon } from '@iconify/react'
 
 import { Button } from '@components/Button'
@@ -8,14 +8,20 @@ import { Typography } from '@components/Typography'
 import { useTheme } from '@/hooks/useTheme'
 import { i18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
+import { THEME } from '@/lib/theme'
+import { PALETTE } from '@/lib/palette'
 
-/**
- * Casca da área autenticada (/app). As rotas filhas renderizam no <Outlet />.
- * A sidebar colapsa para só-ícones (estado local `collapsed`).
- */
 export function AppLayout() {
+  const { lang } = useParams({ from: '/$lang/app' })
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
   const { theme, toggleTheme } = useTheme()
+
+  const navItems = [
+    { name: i18n('common.navigation.home'), href: `/${lang}/app`, icon: 'lucide:workflow' },
+    { name: i18n('common.navigation.chat'), href: `/${lang}/app/mychat`, icon: 'lucide:message-circle' },
+    { name: i18n('common.navigation.agenda'), href: `/${lang}/app/schedule`, icon: 'lucide:calendar' },
+  ]
 
   return (
     // <div className="flex min-h-dvh flex-col">
@@ -51,15 +57,15 @@ export function AppLayout() {
           <Icon
             icon={collapsed ? 'lucide:sidebar-open' : 'lucide:sidebar-close'}
             fontSize={20}
-            className='text-zinc-500'
+            className={THEME.textMuted}
           />
         </Button>
-        <Typography variant="h3" as="span" className='text-center w-full'>
-          Searchbar
+        <Typography variant="h3" as="span" className='text-center w-full font-light'>
+          {' '}
         </Typography>
 
         <div className='flex items-center gap-2 hover:bg-active px-2 py-1 rounded-lg transition-colors cursor-pointer'>
-          <Icon icon='lucide:graduation-cap' />
+          <Icon icon='lucide:graduation-cap' className={THEME.textMuted} />
           <Typography variant="subtitle" as='span' className='whitespace-nowrap text-nowrap'>
             IFC Blumenau
           </Typography>
@@ -70,35 +76,30 @@ export function AppLayout() {
         <section
           className={cn(
             'bg-contrast border border-divider-contrast px-2 py-3 m-4 rounded-lg shadow-xl',
-            // shrink-0: a sidebar mantém a largura, não é espremida pelo main.
-            // overflow-hidden: recorta a label enquanto ela colapsa.
             'flex flex-col justify-between shrink-0 overflow-hidden',
-            // Só a LARGURA anima — fecha da direita p/ esquerda.
-            'transition-[width] duration-200 ease-in-out',
+            'transition-[width] duration-300 ease-in-out',
             collapsed ? 'w-16 items-center' : 'w-48 items-start',
           )}
         >
           <div className='w-full'>
             <nav>
-              <ul className={cn('flex flex-col gap-2', collapsed && 'items-center')}>
-                {Array.from({ length: 4 }).map((_, index) => (
+              <ul className={cn('flex flex-col gap-2')}>
+                {navItems.map((item, index) => (
                   <li key={index}>
-                    <a
-                      href={`/app/page-${index + 1}`}
+                    <Link
+                      to={item.href}
                       className={cn(
-                        'flex items-center rounded transition-colors hover:bg-active',
-                        // colapsado: quadrado com ícone centrado (sem sobra à direita)
-                        collapsed ? 'size-10 justify-center' : 'w-full justify-start px-3 py-1.5',
+                        'w-full inline-flex items-center gap-2 px-3 py-1.5 rounded transition-all ease-in duration-200',
+                        location.pathname === item.href
+                          ? `${PALETTE.purple.bg} ${PALETTE.purple.textOnFilled} ${PALETTE.purple.shadow} ${PALETTE.purple.bgHover}`
+                          : 'hover:bg-active',
                       )}
                     >
-                      <Icon icon='lucide:file-text' fontSize={18} className='shrink-0' />
-                      {/* label só aparece/some — sem animação de fade */}
-                      {!collapsed && (
-                        <Typography variant="subtitle" as="span" className='ml-2 whitespace-nowrap'>
-                          Page {index + 1}
-                        </Typography>
-                      )}
-                    </a>
+                      <Icon icon={item.icon} fontSize={18} className={cn('shrink-0', collapsed && 'transition-discrete ml-0.5')} />
+                      <Typography variant="body" as="span" className={cn('whitespace-nowrap', collapsed && 'hidden')}>
+                        {item.name}
+                      </Typography>
+                    </Link>
                   </li>
                 ))}
               </ul>
