@@ -32,7 +32,8 @@
   --background: theme(--color-zinc-100);
   --contrast: theme(--color-zinc-200);
   --active: theme(--color-zinc-300);
-  --divider: theme(--color-zinc-300);
+  --divider: theme(--color-zinc-200);
+  --divider-contrast: theme(--color-zinc-300);
   --foreground: theme(--color-zinc-900);
 }
 
@@ -40,7 +41,8 @@
   --background: theme(--color-zinc-900);
   --contrast: theme(--color-zinc-800);
   --active: theme(--color-zinc-700);
-  --divider: theme(--color-zinc-700);
+  --divider: theme(--color-zinc-800);
+  --divider-contrast: theme(--color-zinc-700);
   --foreground: theme(--color-zinc-100);
 }
 
@@ -57,6 +59,7 @@
   --color-contrast: var(--contrast);
   --color-active: var(--active);
   --color-divider: var(--divider);
+  --color-divider-contrast: var(--divider-contrast);
   --color-foreground: var(--foreground);
 }
 

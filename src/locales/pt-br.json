@@ -4,7 +4,10 @@
     "carregando": "Carregando...",
     "sair": "Sair",
     "mudar-tema-claro": "Mudar para o tema claro",
-    "mudar-tema-escuro": "Mudar para o tema escuro"
+    "mudar-tema-escuro": "Mudar para o tema escuro",
+    "recolher-menu": "Recolher menu lateral",
+    "expandir-menu": "Expandir menu lateral",
+    "modo-escuro": "Modo escuro"
   },
   "validation": {
     "campo-obrigatorio": "Campo obrigatório.",

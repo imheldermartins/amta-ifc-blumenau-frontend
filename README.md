@@ -248,8 +248,11 @@ O passo a passo também está comentado no topo de `src/lib/i18n.ts`.
   (texto sobre fundo colorido é sempre `zinc-950`; texto NA cor usa
   `-600`/`-400` para leitura). Classes literais (Tailwind não compila classe
   montada em runtime) e helpers `paletteBgText` / `paletteBorderText`.
-- [Button.tsx](src/components/Button.tsx) — variantes `filled` e `outlined`,
-  cores da paleta.
+- [Button.tsx](src/components/Button.tsx) — variantes `filled`, `outlined` e
+  `text` (só a cor no texto em repouso; fundo aparece no hover). Cor padrão
+  `purple`; `color` aceita qualquer cor da paleta ou `from-theme`, que usa os
+  tokens neutros do tema (`foreground` no texto, `active` no fundo) em vez de
+  um hue.
 - [Typography.tsx](src/components/Typography.tsx) — texto padronizado com
   variants (`h1`, `h2`, `h3`, `subtitle`, `body`, `caption`) e prop `as`
   para trocar a tag mantendo o estilo. Todo texto de página passa por ele

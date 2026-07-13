@@ -21,7 +21,6 @@ export function HomePage() {
       <div className="flex gap-3">
         <Button
           variant="filled"
-          color="blue"
           onClick={() => navigate({ to: '/$lang/sign-in', params: { lang } })}
         >
           {i18n('pages.home.entrar')}

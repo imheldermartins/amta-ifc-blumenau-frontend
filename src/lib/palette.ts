@@ -4,14 +4,14 @@
  * As chaves são SEMÂNTICAS e mapeiam para hues do Tailwind:
  *   red → rose · blue → blue · purple → violet · green → emerald
  *
- * Regra de tema: superfícies/bordas na cor usam o tom `-300` no light theme
- * e `-500` no dark theme. Texto sobre fundo colorido é sempre zinc-950
- * (ambos os tons são claros o bastante). Texto NA cor (outlined, erros,
- * links) usa `-600`/`-400` para manter contraste de leitura.
+ * Regra de tema: superfícies/bordas na cor usam o tom `-600` no light theme
+ * e `-500` no dark theme. Texto sobre fundo colorido (filled) é sempre branco
+ * (#FFFFFF). Texto NA cor (outlined, text, erros, links) usa `-600`/`-400`
+ * para manter contraste de leitura.
  *
  * Todas as classes ficam escritas por extenso (string literal) porque o
  * Tailwind só gera o CSS de classes que aparecem completas no código —
- * montar `bg-${cor}-300` em runtime não funciona.
+ * montar `bg-${cor}-600` em runtime não funciona.
  *
  * Para adicionar uma cor: inclua a chave em `PALETTE_COLORS` e preencha a
  * nova entrada em `PALETTE` seguindo a regra 300/500.
@@ -39,36 +39,36 @@ export interface PaletteEntry {
 
 export const PALETTE: Record<PaletteColor, PaletteEntry> = {
   blue: {
-    bg: 'bg-blue-300 dark:bg-blue-500',
+    bg: 'bg-blue-600 dark:bg-blue-500',
     bgHover: 'hover:bg-blue-400 dark:hover:bg-blue-600',
-    bgSoft: 'hover:bg-blue-300/25 dark:hover:bg-blue-500/20',
+    bgSoft: 'hover:bg-blue-600/25 dark:hover:bg-blue-500/20',
     text: 'text-blue-600 dark:text-blue-400',
-    textOnFilled: 'text-zinc-950',
-    border: 'border-blue-300 dark:border-blue-500',
+    textOnFilled: 'text-white',
+    border: 'border-blue-600 dark:border-blue-500',
   },
   red: {
-    bg: 'bg-rose-300 dark:bg-rose-500',
+    bg: 'bg-rose-600 dark:bg-rose-500',
     bgHover: 'hover:bg-rose-400 dark:hover:bg-rose-600',
-    bgSoft: 'hover:bg-rose-300/25 dark:hover:bg-rose-500/20',
+    bgSoft: 'hover:bg-rose-600/25 dark:hover:bg-rose-500/20',
     text: 'text-rose-600 dark:text-rose-400',
-    textOnFilled: 'text-zinc-950',
-    border: 'border-rose-300 dark:border-rose-500',
+    textOnFilled: 'text-white',
+    border: 'border-rose-600 dark:border-rose-500',
   },
   purple: {
-    bg: 'bg-violet-300 dark:bg-violet-500',
+    bg: 'bg-violet-600 dark:bg-violet-500',
     bgHover: 'hover:bg-violet-400 dark:hover:bg-violet-600',
-    bgSoft: 'hover:bg-violet-300/25 dark:hover:bg-violet-500/20',
+    bgSoft: 'hover:bg-violet-600/25 dark:hover:bg-violet-500/20',
     text: 'text-violet-600 dark:text-violet-400',
-    textOnFilled: 'text-zinc-950',
-    border: 'border-violet-300 dark:border-violet-500',
+    textOnFilled: 'text-white',
+    border: 'border-violet-600 dark:border-violet-500',
   },
   green: {
-    bg: 'bg-emerald-300 dark:bg-emerald-500',
+    bg: 'bg-emerald-600 dark:bg-emerald-500',
     bgHover: 'hover:bg-emerald-400 dark:hover:bg-emerald-600',
-    bgSoft: 'hover:bg-emerald-300/25 dark:hover:bg-emerald-500/20',
+    bgSoft: 'hover:bg-emerald-600/25 dark:hover:bg-emerald-500/20',
     text: 'text-emerald-600 dark:text-emerald-400',
-    textOnFilled: 'text-zinc-950',
-    border: 'border-emerald-300 dark:border-emerald-500',
+    textOnFilled: 'text-white',
+    border: 'border-emerald-600 dark:border-emerald-500',
   },
 }
 
@@ -76,7 +76,7 @@ export const PALETTE: Record<PaletteColor, PaletteEntry> = {
  * Helper sob demanda que combina `bg` + `text` de contraste de uma cor.
  *
  * @example
- * paletteBgText('blue') // → "bg-blue-300 dark:bg-blue-500 text-zinc-950"
+ * paletteBgText('blue') // → "bg-blue-600 dark:bg-blue-500 text-white"
  */
 export function paletteBgText(color: PaletteColor): string {
   const entry = PALETTE[color]
@@ -87,7 +87,7 @@ export function paletteBgText(color: PaletteColor): string {
  * Combina `border` + `text` na própria cor (base do estilo outlined).
  *
  * @example
- * paletteBorderText('green') // → "border-emerald-300 dark:border-emerald-500 text-emerald-600 dark:text-emerald-400"
+ * paletteBorderText('green') // → "border-emerald-600 dark:border-emerald-500 text-emerald-600 dark:text-emerald-400"
  */
 export function paletteBorderText(color: PaletteColor): string {
   const entry = PALETTE[color]
