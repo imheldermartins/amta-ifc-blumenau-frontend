@@ -14,10 +14,13 @@ execução às vezes não regenera; valide com `npm run build` (ou reinicie o de
 
 ## Arquitetura
 
-Frontend (:5173) → **cubs-backend** (Express, :5000) → **rqlite** (:8000).
+Frontend (:5173) → **cubs-backend** (Express, :3000) → **rqlite** (:8000, dev).
 O frontend fala com a API do backend (rotas `/auth`, `/users`, ...), nunca com
 o rqlite direto. API HTTP e socket.io são o MESMO servidor
-(`src/lib/connection.ts`).
+(`src/lib/connection.ts`). Em dev, sem env definida, tudo passa pelo proxy do
+Vite (`/api` e `/socket.io` → :3000); em prod, o nginx do container faz esse
+papel (`nginx/nginx.conf`, porta 80 — ver `Dockerfile` e o compose de prod em
+`cubs-backend/docker/docker-compose.prod.yml`).
 
 ## Convenções
 
@@ -39,8 +42,19 @@ o rqlite direto. API HTTP e socket.io são o MESMO servidor
   `--font-sans` (Noto Sans). **Sem tokens por-componente.** Adicionar um token
   de cor = 2 passos: (1) definir `--x` em `:root` e `.dark`; (2) registrar
   `--color-x: var(--x)` em `@theme inline` (é isso que gera `bg-x`, `text-x`, ...).
-- `src/lib/palette.ts` — cores de destaque (`blue`/`red`/`purple`/`green` →
-  hues rose/violet/emerald/blue). Filled colorido usa texto branco.
+- **Cores de destaque = utilitários nativos `p-*`** (definidos em `index.css`):
+  os nomes semânticos mapeiam para hues (`red→rose`, `blue→blue`,
+  `purple→violet`, `green→emerald`). Use direto no `className`, sem importar
+  nada:
+  - Tom cheio, theme-aware: `bg-p-red`, `text-p-red`, `border-p-red`,
+    `shadow-p-red` (600 no light / 500 no dark). `shadow-p-red` só dá a COR —
+    combine com um tamanho (`shadow-xl shadow-p-red`).
+  - Escala completa p/ controle fino: `bg-p-red-500`, `text-p-red-600
+    dark:text-p-red-400`, `shadow-p-red-600/20 dark:shadow-p-red-500/20`, etc.
+  - `src/lib/palette.ts` (`PALETTE`) é só para cor **dinâmica por prop**
+    (`<Button color={cor} />`) — compõe as mesmas classes `p-*`. Para cor fixa,
+    prefira os utilitários e NÃO importe `PALETTE`. Filled colorido usa texto
+    branco (`text-white`).
 - `src/components/Typography.tsx` — todo texto usa variants (`h1`..`caption`).
 
 ## Componentes dual-mode (form OU state)

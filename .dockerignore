@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+.git
+.vscode
+.idea
+*.log
+# .env local NÃO pode entrar no build de prod (vazaria VITE_CUBS_API_URL de
+# dev para o bundle). Os .env.development/.env.production commitados entram.
+.env
+*.local

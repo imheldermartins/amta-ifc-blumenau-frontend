@@ -35,6 +35,15 @@
   --divider: theme(--color-zinc-200);
   --divider-contrast: theme(--color-zinc-300);
   --foreground: theme(--color-zinc-900);
+
+  /* Tom "cheio" (bare) de cada cor de destaque, JÁ theme-aware: 600 no light.
+     Mapeia os nomes semânticos aos hues do Tailwind (red→rose, blue→blue,
+     purple→violet, green→emerald). É o que faz bg-p-red / text-p-red /
+     border-p-red / shadow-p-red seguirem as regras sem precisar de sufixo. */
+  --p-red: theme(--color-rose-600);
+  --p-blue: theme(--color-blue-600);
+  --p-purple: theme(--color-violet-600);
+  --p-green: theme(--color-emerald-600);
 }
 
 .dark {
@@ -44,6 +53,12 @@
   --divider: theme(--color-zinc-800);
   --divider-contrast: theme(--color-zinc-700);
   --foreground: theme(--color-zinc-100);
+
+  /* No dark, o tom cheio cai para 500 (regra de superfície/borda da palette). */
+  --p-red: theme(--color-rose-500);
+  --p-blue: theme(--color-blue-500);
+  --p-purple: theme(--color-violet-500);
+  --p-green: theme(--color-emerald-500);
 }
 
 /* Fonte padrão do projeto. Sobrescrever --font-sans faz TODO o app herdar
@@ -61,6 +76,79 @@
   --color-divider: var(--divider);
   --color-divider-contrast: var(--divider-contrast);
   --color-foreground: var(--foreground);
+
+  /* Tom cheio (bare) theme-aware -> gera bg-p-red, text-p-red, border-p-red,
+     shadow-p-red (idem blue/purple/green). Ex.: `bg-p-red text-white` para um
+     preenchido, ou `text-p-red` para texto na cor. shadow-p-red só define a
+     COR da sombra; combine com um tamanho (ex.: `shadow-xl shadow-p-red`). */
+  --color-p-red: var(--p-red);
+  --color-p-blue: var(--p-blue);
+  --color-p-purple: var(--p-purple);
+  --color-p-green: var(--p-green);
+}
+
+/*
+ * Escala COMPLETA das cores de destaque como cores nativas do Tailwind, com os
+ * nomes semânticos do projeto apontando para os hues (red→rose, blue→blue,
+ * purple→violet, green→emerald). Isto gera p-red-50 ... p-red-950 em TODOS os
+ * utilitários de cor (bg-, text-, border-, ring-, shadow-, from-, ...), então
+ * dá para controlar o tom por tema quando precisar de precisão:
+ *
+ *   texto na cor .....: text-p-red-600 dark:text-p-red-400
+ *   borda na cor .....: border-p-red-600 dark:border-p-red-500
+ *   sombra suave .....: shadow-xl shadow-p-red-600/20 dark:shadow-p-red-500/20
+ *
+ * É a fonte única de verdade da palette: o objeto PALETTE (src/lib/palette.ts)
+ * compõe estas mesmas classes para o caso de cor dinâmica por prop.
+ */
+@theme {
+  --color-p-red-50: var(--color-rose-50);
+  --color-p-red-100: var(--color-rose-100);
+  --color-p-red-200: var(--color-rose-200);
+  --color-p-red-300: var(--color-rose-300);
+  --color-p-red-400: var(--color-rose-400);
+  --color-p-red-500: var(--color-rose-500);
+  --color-p-red-600: var(--color-rose-600);
+  --color-p-red-700: var(--color-rose-700);
+  --color-p-red-800: var(--color-rose-800);
+  --color-p-red-900: var(--color-rose-900);
+  --color-p-red-950: var(--color-rose-950);
+
+  --color-p-blue-50: var(--color-blue-50);
+  --color-p-blue-100: var(--color-blue-100);
+  --color-p-blue-200: var(--color-blue-200);
+  --color-p-blue-300: var(--color-blue-300);
+  --color-p-blue-400: var(--color-blue-400);
+  --color-p-blue-500: var(--color-blue-500);
+  --color-p-blue-600: var(--color-blue-600);
+  --color-p-blue-700: var(--color-blue-700);
+  --color-p-blue-800: var(--color-blue-800);
+  --color-p-blue-900: var(--color-blue-900);
+  --color-p-blue-950: var(--color-blue-950);
+
+  --color-p-purple-50: var(--color-violet-50);
+  --color-p-purple-100: var(--color-violet-100);
+  --color-p-purple-200: var(--color-violet-200);
+  --color-p-purple-300: var(--color-violet-300);
+  --color-p-purple-400: var(--color-violet-400);
+  --color-p-purple-500: var(--color-violet-500);
+  --color-p-purple-600: var(--color-violet-600);
+  --color-p-purple-700: var(--color-violet-700);
+  --color-p-purple-800: var(--color-violet-800);
+  --color-p-purple-900: var(--color-violet-900);
+  --color-p-purple-950: var(--color-violet-950);
+
+  --color-p-green-50: var(--color-emerald-50);
+  --color-p-green-100: var(--color-emerald-100);
+  --color-p-green-200: var(--color-emerald-200);
+  --color-p-green-300: var(--color-emerald-300);
+  --color-p-green-400: var(--color-emerald-400);
+  --color-p-green-500: var(--color-emerald-500);
+  --color-p-green-600: var(--color-emerald-600);
+  --color-p-green-700: var(--color-emerald-700);
+  --color-p-green-800: var(--color-emerald-800);
+  --color-p-green-900: var(--color-emerald-900);
+  --color-p-green-950: var(--color-emerald-950);
 }
 
 /* `rounded` (sem sufixo) passa a valer o raio padrão do projeto (lg).

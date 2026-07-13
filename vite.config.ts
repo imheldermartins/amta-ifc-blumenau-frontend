@@ -31,14 +31,14 @@ export default defineConfig({
       // Express (cubs-backend). Para apontar direto para outra instância,
       // defina VITE_CUBS_API_URL (ver .env.example).
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         rewrite: (requestPath) => requestPath.replace(/^\/api/, ''),
       },
       // WebSocket do socket.io: MESMO backend da API, com upgrade de
       // protocolo (ws) — não é um servidor separado.
       '/socket.io': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         ws: true,
       },

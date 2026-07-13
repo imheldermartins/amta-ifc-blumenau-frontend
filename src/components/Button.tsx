@@ -31,6 +31,7 @@ const THEME_ENTRY: PaletteEntry = {
   text: 'text-foreground',
   textOnFilled: 'text-foreground',
   border: 'border-divider',
+  shadow: 'shadow-xl shadow-divider/20',
 }
 
 function resolveColor(color: ButtonColor): PaletteEntry {

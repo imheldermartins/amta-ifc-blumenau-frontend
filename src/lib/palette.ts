@@ -4,17 +4,23 @@
  * As chaves são SEMÂNTICAS e mapeiam para hues do Tailwind:
  *   red → rose · blue → blue · purple → violet · green → emerald
  *
- * Regra de tema: superfícies/bordas na cor usam o tom `-600` no light theme
- * e `-500` no dark theme. Texto sobre fundo colorido (filled) é sempre branco
- * (#FFFFFF). Texto NA cor (outlined, text, erros, links) usa `-600`/`-400`
- * para manter contraste de leitura.
+ * Esse mapeamento está registrado como cor NATIVA do Tailwind em
+ * `src/index.css` (escala `p-*`). Então, para a maioria dos casos, você NÃO
+ * precisa importar este arquivo — use as classes direto no `className`:
  *
- * Todas as classes ficam escritas por extenso (string literal) porque o
- * Tailwind só gera o CSS de classes que aparecem completas no código —
- * montar `bg-${cor}-600` em runtime não funciona.
+ *   bg-p-red / text-p-red / border-p-red / shadow-p-red   (tom cheio, theme-aware)
+ *   text-p-red-600 dark:text-p-red-400                    (controle fino de tom)
  *
- * Para adicionar uma cor: inclua a chave em `PALETTE_COLORS` e preencha a
- * nova entrada em `PALETTE` seguindo a regra 300/500.
+ * Este objeto `PALETTE` existe para o caso em que a cor é DINÂMICA (escolhida
+ * por prop em runtime, ex.: <Button color={cor} />): aí não dá para escrever a
+ * classe por extenso e precisamos de um mapa. Ele compõe exatamente as mesmas
+ * classes `p-*` — a fonte da verdade das cores é o CSS.
+ *
+ * Regra de tema (a mesma da escala): superfície/hover/borda usam `-500..-600`;
+ * texto sobre fundo colorido (filled) é branco; texto NA cor usa `-600`/`-400`.
+ *
+ * Para adicionar uma cor: registre a escala `p-<nome>` no index.css, inclua a
+ * chave em `PALETTE_COLORS` e preencha a entrada em `PALETTE`.
  */
 import { clsx } from 'clsx'
 
@@ -41,40 +47,40 @@ export interface PaletteEntry {
 
 export const PALETTE: Record<PaletteColor, PaletteEntry> = {
   blue: {
-    bg: 'bg-blue-500 dark:bg-blue-500',
-    bgHover: 'hover:bg-blue-400 dark:hover:bg-blue-600',
-    bgSoft: 'hover:bg-blue-600/25 dark:hover:bg-blue-500/20',
-    text: 'text-blue-600 dark:text-blue-400',
+    bg: 'bg-p-blue-500',
+    bgHover: 'hover:bg-p-blue-400 dark:hover:bg-p-blue-600',
+    bgSoft: 'hover:bg-p-blue-600/25 dark:hover:bg-p-blue-500/20',
+    text: 'text-p-blue-600 dark:text-p-blue-400',
     textOnFilled: 'text-white',
-    border: 'border-blue-600 dark:border-blue-500',
-    shadow: 'shadow-xl shadow-blue-600/20 dark:shadow-blue-500/20',
+    border: 'border-p-blue-600 dark:border-p-blue-500',
+    shadow: 'shadow-xl shadow-p-blue-600/20 dark:shadow-p-blue-500/20',
   },
   red: {
-    bg: 'bg-rose-500 dark:bg-rose-500',
-    bgHover: 'hover:bg-rose-400 dark:hover:bg-rose-600',
-    bgSoft: 'hover:bg-rose-600/25 dark:hover:bg-rose-500/20',
-    text: 'text-rose-600 dark:text-rose-400',
+    bg: 'bg-p-red-500',
+    bgHover: 'hover:bg-p-red-400 dark:hover:bg-p-red-600',
+    bgSoft: 'hover:bg-p-red-600/25 dark:hover:bg-p-red-500/20',
+    text: 'text-p-red-600 dark:text-p-red-400',
     textOnFilled: 'text-white',
-    border: 'border-rose-600 dark:border-rose-500',
-    shadow: 'shadow-xl shadow-rose-600/20 dark:shadow-rose-500/20',
+    border: 'border-p-red-600 dark:border-p-red-500',
+    shadow: 'shadow-xl shadow-p-red-600/20 dark:shadow-p-red-500/20',
   },
   purple: {
-    bg: 'bg-violet-500 dark:bg-violet-500',
-    bgHover: 'hover:bg-violet-400 dark:hover:bg-violet-600',
-    bgSoft: 'hover:bg-violet-600/25 dark:hover:bg-violet-500/20',
-    text: 'text-violet-600 dark:text-violet-400',
+    bg: 'bg-p-purple-500',
+    bgHover: 'hover:bg-p-purple-400 dark:hover:bg-p-purple-600',
+    bgSoft: 'hover:bg-p-purple-600/25 dark:hover:bg-p-purple-500/20',
+    text: 'text-p-purple-600 dark:text-p-purple-400',
     textOnFilled: 'text-white',
-    border: 'border-violet-600 dark:border-violet-500',
-    shadow: 'shadow-xl shadow-violet-600/20 dark:shadow-violet-500/20',
+    border: 'border-p-purple-600 dark:border-p-purple-500',
+    shadow: 'shadow-xl shadow-p-purple-600/20 dark:shadow-p-purple-500/20',
   },
   green: {
-    bg: 'bg-emerald-500 dark:bg-emerald-500',
-    bgHover: 'hover:bg-emerald-400 dark:hover:bg-emerald-600',
-    bgSoft: 'hover:bg-emerald-600/25 dark:hover:bg-emerald-500/20',
-    text: 'text-emerald-600 dark:text-emerald-400',
+    bg: 'bg-p-green-500',
+    bgHover: 'hover:bg-p-green-400 dark:hover:bg-p-green-600',
+    bgSoft: 'hover:bg-p-green-600/25 dark:hover:bg-p-green-500/20',
+    text: 'text-p-green-600 dark:text-p-green-400',
     textOnFilled: 'text-white',
-    border: 'border-emerald-600 dark:border-emerald-500',
-    shadow: 'shadow-xl shadow-emerald-600/20 dark:shadow-emerald-500/20',
+    border: 'border-p-green-600 dark:border-p-green-500',
+    shadow: 'shadow-xl shadow-p-green-600/20 dark:shadow-p-green-500/20',
   },
 }
 
