@@ -1,0 +1,28 @@
+{
+  "name": "cubs-database",
+  "private": true,
+  "version": "0.5.0",
+  "type": "module",
+  "description": "Visualização da base de dados simulada (PageTree) do Cub's — componente + utils + mockableData.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "bump": "node scripts/bump.mjs",
+    "prepack": "node scripts/build.mjs"
+  },
+  "peerDependencies": {
+    "@iconify/react": ">=6.0.0",
+    "react": ">=19.0.0"
+  }
+}

@@ -23,6 +23,10 @@ export default defineConfig({
       '@components': path.resolve(__dirname, './src/components'),
       '@contexts': path.resolve(__dirname, './src/contexts'),
       '@locales': path.resolve(__dirname, './src/locales'),
+      // Lib autoral: a FONTE é src/shared/cubs-database (edite lá);
+      // packages/cubs-database é o snapshot versionável (cubs-database:sync).
+      // O alias garante que o app consome a fonte, não o node_modules.
+      'cubs-database': path.resolve(__dirname, './src/shared/cubs-database'),
     },
   },
   server: {

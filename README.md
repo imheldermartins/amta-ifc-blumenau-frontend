@@ -270,6 +270,50 @@ O passo a passo também está comentado no topo de `src/lib/i18n.ts`.
 > `npx shadcn add`, o componente virá esperando tokens que aqui não existem
 > (`--primary`, `--muted`, ...); adapte as classes dele para esta base.
 
+## Lib autoral: cubs-database
+
+O componente `<CubsDatabase />` (visualização da base de dados simulada da
+arquitetura PageTree) é desenvolvido como uma **lib npm autoral** dentro deste
+repo — detalhes no [README da lib](packages/cubs-database/README.md).
+
+- **Fonte da verdade: [src/shared/cubs-database](src/shared/cubs-database)** —
+  edite direto aí, com HMR. O alias `cubs-database` (vite/tsconfig) aponta para
+  a fonte, então o app importa como pacote:
+  `import { CubsDatabase, mockableData } from 'cubs-database'`.
+- **[packages/cubs-database](packages/cubs-database)** é só a casca de
+  publicação (nome, versão, exports, scripts). Não tem código-fonte; o `dist/`
+  (JS ESM + `.d.ts`) é gerado no build e não vai para o git.
+- No `package.json` do app a lib fica listada como dependência local:
+  `"cubs-database": "file:packages/cubs-database"` (vira link no
+  `node_modules`).
+
+### Scripts
+
+```bash
+npm run cubs-database:bump    # versão +0.1 (0.9.0 → 1.0.0) e carimba version.ts na fonte
+npm run cubs-database:build   # compila a fonte → packages/cubs-database/dist
+npm run cubs-database:pack    # gera o tarball instalável (builda sozinho via prepack)
+```
+
+### Instalando em outro projeto React
+
+```bash
+# 1. aqui no cubs-frontend — gera packages/cubs-database/cubs-database-<versao>.tgz
+npm run cubs-database:pack
+
+# 2. no outro projeto
+npm install ../cubs-frontend/packages/cubs-database/cubs-database-<versao>.tgz
+```
+
+O pacote entra no `node_modules` do outro projeto **só com o JS buildado** e
+os tipos — `import { CubsDatabase } from 'cubs-database'` funciona sem
+Vite/TS especial. Publicar num registro npm no futuro usa o mesmo `dist`
+(basta remover o `"private": true` da lib e `npm publish`).
+
+> Pendência antes da v1.0: o componente usa classes Tailwind com tokens do
+> tema do Cub's (`bg-contrast`, `border-divider`, ...). Num projeto sem esses
+> tokens ele renderiza sem estilo — a lib ainda vai embutir CSS próprio.
+
 ## Convenções
 
 - Rotas: nomes padrão em kebab-case (`sign-in`, `sign-up`, ...).

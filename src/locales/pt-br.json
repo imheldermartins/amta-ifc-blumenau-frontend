@@ -93,7 +93,20 @@
         "resposta": "Resposta do servidor:",
         "sem-resposta": "Nenhuma resposta ainda."
       },
-      "headline": "Area de Trabalho"
+      "headline": "Area de Trabalho",
+      "cubs-database": {
+        "titulo": "Base de dados (simulação)",
+        "vazio": "Nenhum registro.",
+        "em-breve": "Esta view ainda está em construção.",
+        "abrir": "Abrir",
+        "arrastar-linha": "Arrastar linha",
+        "selecionar-linha": "Selecionar linha",
+        "menu": {
+          "renomear": "Renomear view",
+          "duplicar": "Duplicar view",
+          "excluir": "Excluir view"
+        }
+      }
     }
   }
 }

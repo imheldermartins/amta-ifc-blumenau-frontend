@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cubs-database:build": "node packages/cubs-database/scripts/build.mjs",
+    "cubs-database:bump": "node packages/cubs-database/scripts/bump.mjs",
+    "cubs-database:pack": "npm pack ./packages/cubs-database --pack-destination packages/cubs-database"
   },
   "dependencies": {
     "@fontsource-variable/noto-sans": "5.2.10",
@@ -18,6 +21,7 @@
     "axios": "1.18.1",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
+    "cubs-database": "file:packages/cubs-database",
     "i18next": "26.3.6",
     "lucide-react": "1.24.0",
     "polished": "4.3.1",
