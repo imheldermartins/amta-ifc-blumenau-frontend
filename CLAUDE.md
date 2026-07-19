@@ -18,9 +18,46 @@ Frontend (:5173) → **cubs-backend** (Express, :3000) → **rqlite** (:8000, de
 O frontend fala com a API do backend (rotas `/auth`, `/users`, ...), nunca com
 o rqlite direto. API HTTP e socket.io são o MESMO servidor
 (`src/lib/connection.ts`). Em dev, sem env definida, tudo passa pelo proxy do
-Vite (`/api` e `/socket.io` → :3000); em prod, o nginx do container faz esse
-papel (`nginx/nginx.conf`, porta 80 — ver `Dockerfile` e o compose de prod em
-`cubs-backend/docker/docker-compose.prod.yml`).
+Vite (`API_BASE_PATH` e `/socket.io` → :3000); em prod, o nginx do container
+faz esse papel (`nginx/nginx.conf`, porta 80 — ver `Dockerfile` e o compose de
+prod em `cubs-backend/docker/docker-compose.prod.yml`).
+
+**O `/api` é REAL nos dois lados** — o backend monta todos os routers sob `/api`
+(`API_PREFIX` em `cubs-backend/src/core/http/http-server.ts`) e os mediadores
+(Vite em dev, nginx em prod) repassam o path INTACTO, sem reescrever. O prefixo
+ainda serve para o proxy separar chamada de API de rota da SPA na mesma origem,
+mas não morre ali. Os services pedem o path direto (`/pages/:id`) porque quem
+prende o prefixo é o `baseURL` do axios — que termina em `/api` inclusive
+quando `VITE_CUBS_API_URL` aponta direto para o backend. Valor único em
+`API_BASE_PATH` (`src/constants/api.ts`), com o `nginx.conf` espelhando na mão.
+O `/socket.io` fica FORA do prefixo (raiz do backend).
+
+## Base de dados (CubsDatabase)
+
+O backend modela páginas como **árvore recursiva** (`page_edges`: parent →
+child): não existe página "raiz" como tipo. Uma base/tabela é só uma página
+cujas FILHAS são as linhas — a mesma página é filha num nível e parent no
+seguinte. A workspace só resolve o **ponto de entrada**
+(`/workspaces/:id/page_root`, GET-or-create); daí para baixo é página → página,
+e o que muda é apenas o id.
+
+- `src/services/DatabaseService.ts` — I/O. A unidade é `loadPage(pageId)` (as 3
+  leituras da página em paralelo); `loadWorkspace(workspaceId)` é o caso
+  particular que resolve o id de entrada e delega. Nada assume workspace única:
+  `FIXED_WORKSPACE_ID` é TEMPORÁRIO, até existir o contexto de workspace.
+- `src/lib/databaseParser.ts` — adaptador API → modelo da lib `cubs-database`,
+  puro e testável. A lib é agnóstica ao backend de propósito, então a tradução
+  mora só aqui. O que ele resolve, e que não é óbvio:
+  - `pages.title` não é uma coluna — vira a coluna sintética `TITLE_COLUMN_ID`
+    (`page_title`), sempre a primeira;
+  - `select` guarda o **ULID da option**, não o texto: sem traduzir pelas
+    `options` da coluna, a célula mostraria o ULID cru;
+  - valores vêm no envelope `{"value":<T>}` **como string JSON**, e o
+    `column_data` do dataset também;
+  - as colunas saem de `/pages/parent/:id/columns`, NUNCA do dataset — o JOIN
+    dele parte dos valores, então coluna ainda sem valor não apareceria;
+  - `pages.data` guarda as views (`{ [ulid]: view }`); entrada com formato
+    inesperado é descartada, e base sem view cai num fallback de id FIXO.
 
 ## Convenções
 

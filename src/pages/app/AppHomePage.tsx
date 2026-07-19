@@ -1,26 +1,42 @@
 import { useEffect, useState } from 'react'
-import { CubsDatabase, mockableData } from 'cubs-database'
-import type { RowData } from 'cubs-database'
+import { CubsDatabase } from 'cubs-database'
 
+import type { ParsedDatabase } from '@/lib/databaseParser'
 import { i18n } from '@/lib/i18n'
+import { databaseService, FIXED_WORKSPACE_ID } from '@/services/DatabaseService'
 import { Typography } from '@components/Typography'
 // import { FormExampleSection } from '@/pages/app/sections/FormExampleSection'
 // import { SocketExampleSection } from '@/pages/app/sections/SocketExampleSection'
 
-const dataset = mockableData.pageTree
-
 /** Conteúdo provisório provando que as rotas internas renderizam no Outlet de /app. */
 export function AppHomePage() {
-  // Simula o fetch inicial da base (a lib recebe `loading` e mostra skeleton).
-  const [rows, setRows] = useState<RowData[]>([])
+  const [database, setDatabase] = useState<ParsedDatabase | null>(null)
   const [loading, setLoading] = useState(true)
+  const [failed, setFailed] = useState(false)
 
+  // Fetch inicial: entra pela workspace em foco (fixa até existir o contexto de
+  // workspace) e abre a página de entrada dela como base. O flag `active`
+  // descarta a resposta de um unmount no meio do caminho — sem ele, o setState
+  // cai num componente que já saiu da árvore.
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setRows(dataset.rows)
-      setLoading(false)
-    }, 700)
-    return () => clearTimeout(timer)
+    let active = true
+
+    databaseService
+      .loadWorkspace(FIXED_WORKSPACE_ID)
+      .then((loaded) => {
+        if (active) setDatabase(loaded)
+      })
+      // O ApiService já logou o AppError; aqui só troca o texto da tabela vazia.
+      .catch(() => {
+        if (active) setFailed(true)
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
   }, [])
 
   return (
@@ -31,11 +47,13 @@ export function AppHomePage() {
 
       <CubsDatabase
         className="mt-8"
-        settings={dataset.settings}
-        headerCols={dataset.headerCols}
-        rows={rows}
+        settings={database?.settings ?? {}}
+        headerCols={database?.headerCols ?? []}
+        rows={database?.rows ?? []}
         loading={loading}
-        emptyLabel={i18n('pages.app.cubs-database.vazio')}
+        emptyLabel={i18n(
+          failed ? 'pages.app.cubs-database.erro' : 'pages.app.cubs-database.vazio',
+        )}
         placeholderLabel={i18n('pages.app.cubs-database.em-breve')}
         onOpenRow={(row) => console.log('abrindo página', row)}
         labels={{

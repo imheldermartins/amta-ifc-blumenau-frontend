@@ -100,6 +100,9 @@
         "abrir": "Abrir",
         "arrastar-linha": "Arrastar linha",
         "selecionar-linha": "Selecionar linha",
+        "coluna-titulo": "Título",
+        "view-padrao": "Tabela",
+        "erro": "Não foi possível carregar a base.",
         "menu": {
           "renomear": "Renomear view",
           "duplicar": "Duplicar view",
