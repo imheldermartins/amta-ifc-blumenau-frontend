@@ -3,18 +3,35 @@ import { Link, Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { Icon } from '@iconify/react'
 
 import { Button } from '@components/Button'
+import { Modal } from '@components/Modal'
+import { SearchBar } from '@components/SearchBar'
 import { Switch } from '@components/Switch'
 import { Typography } from '@components/Typography'
+import { useWorkspace, type WorkspaceState } from '@/contexts/WorkspaceContext'
+import { useDialog } from '@/hooks/useDialog'
 import { useTheme } from '@/hooks/useTheme'
 import { i18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 import { THEME } from '@/lib/theme'
+
+/**
+ * Rótulo da workspace na barra superior. Os três estados são distintos de
+ * propósito: workspace que carregou SEM nome (`name` é anulável no backend) não
+ * é a mesma coisa que workspace que não carregou.
+ */
+function workspaceLabel({ workspace, loading, failed }: WorkspaceState): string {
+  if (loading) return i18n('common.carregando')
+  if (failed) return i18n('common.workspace.indisponivel')
+  return workspace?.name ?? i18n('common.workspace.sem-nome')
+}
 
 export function AppLayout() {
   const { lang } = useParams({ from: '/$lang/app' })
   const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
   const { theme, toggleTheme } = useTheme()
+  const workspaceState = useWorkspace()
+  const workspaceDialog = useDialog()
 
   const navItems = [
     { name: i18n('common.navigation.home'), href: `/${lang}/app`, icon: 'lucide:workflow' },
@@ -59,16 +76,24 @@ export function AppLayout() {
             className={THEME.textMuted}
           />
         </Button>
-        <Typography variant="h3" as="span" className='text-center w-full font-light'>
-          {' '}
-        </Typography>
+        {/* Busca do app: o estado dela é a URL (`?q=`), não um state daqui —
+            quem consome lê `useQueryParams().get('q')` de onde estiver. */}
+        <div className='flex flex-1 justify-center px-6'>
+          <SearchBar className='w-full max-w-sm' />
+        </div>
 
-        <div className='flex items-center gap-2 hover:bg-active px-2 py-1 rounded-lg transition-colors cursor-pointer'>
+        <Button
+          variant='text'
+          color='from-theme'
+          className='px-2 py-1'
+          onClick={workspaceDialog.openDialog}
+          aria-label={i18n('common.workspace.abrir-detalhes')}
+        >
           <Icon icon='lucide:graduation-cap' className={THEME.textMuted} />
           <Typography variant="subtitle" as='span' className='whitespace-nowrap text-nowrap'>
-            IFC Blumenau
+            {workspaceLabel(workspaceState)}
           </Typography>
-        </div>
+        </Button>
       </header>
 
       <div className='flex flex-1'>
@@ -115,6 +140,22 @@ export function AppLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* TEMPORÁRIO: enquanto o seletor de workspaces não existe, a modal só
+          mostra o contexto cru — serve de prova de que o fetch do layout chegou
+          e é o lugar onde a interface de escolha vai nascer. */}
+      <Modal
+        {...workspaceDialog.dialogProps}
+        size='lg'
+        accessibleTitle={i18n('common.workspace.detalhes')}
+      >
+        <Typography variant='caption' as='p' className='mb-2'>
+          {i18n('common.workspace.debug-contexto')}
+        </Typography>
+        <pre className='overflow-auto rounded bg-background p-3 text-xs'>
+          {JSON.stringify(workspaceState, null, 2)}
+        </pre>
+      </Modal>
     </div>
   )
 }

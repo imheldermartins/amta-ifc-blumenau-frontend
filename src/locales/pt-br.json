@@ -3,11 +3,24 @@
     "app-name": "Cub's",
     "carregando": "Carregando...",
     "sair": "Sair",
+    "fechar": "Fechar",
     "mudar-tema-claro": "Mudar para o tema claro",
     "mudar-tema-escuro": "Mudar para o tema escuro",
     "recolher-menu": "Recolher menu lateral",
     "expandir-menu": "Expandir menu lateral",
     "modo-escuro": "Modo escuro",
+    "busca": {
+      "placeholder": "Buscar...",
+      "rotulo": "Buscar",
+      "limpar": "Limpar busca"
+    },
+    "workspace": {
+      "abrir-detalhes": "Abrir detalhes da workspace",
+      "detalhes": "Detalhes da workspace",
+      "sem-nome": "Workspace sem nome",
+      "indisponivel": "Workspace indisponível",
+      "debug-contexto": "Contexto da workspace (temporário)"
+    },
     "navigation": {
       "agenda": "Agenda",
       "chat": "Chat",

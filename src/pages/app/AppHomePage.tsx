@@ -1,28 +1,35 @@
 import { useEffect, useState } from 'react'
 import { CubsDatabase } from 'cubs-database'
 
+import { useWorkspace } from '@/contexts/WorkspaceContext'
 import type { ParsedDatabase } from '@/lib/databaseParser'
 import { i18n } from '@/lib/i18n'
-import { databaseService, FIXED_WORKSPACE_ID } from '@/services/DatabaseService'
+import { databaseService } from '@/services/DatabaseService'
 import { Typography } from '@components/Typography'
 // import { FormExampleSection } from '@/pages/app/sections/FormExampleSection'
 // import { SocketExampleSection } from '@/pages/app/sections/SocketExampleSection'
 
 /** Conteúdo provisório provando que as rotas internas renderizam no Outlet de /app. */
 export function AppHomePage() {
+  const { workspaceId } = useWorkspace()
   const [database, setDatabase] = useState<ParsedDatabase | null>(null)
   const [loading, setLoading] = useState(true)
   const [failed, setFailed] = useState(false)
 
-  // Fetch inicial: entra pela workspace em foco (fixa até existir o contexto de
-  // workspace) e abre a página de entrada dela como base. O flag `active`
-  // descarta a resposta de um unmount no meio do caminho — sem ele, o setState
-  // cai num componente que já saiu da árvore.
+  // Fetch inicial: entra pela workspace em foco (o id vem do contexto) e abre a
+  // página de entrada dela como base. O flag `active` descarta a resposta de um
+  // unmount no meio do caminho — sem ele, o setState cai num componente que já
+  // saiu da árvore.
   useEffect(() => {
     let active = true
 
+    // Reset por workspace: hoje o id não muda, mas quando o seletor existir a
+    // troca precisa voltar a "carregando" em vez de manter a base anterior.
+    setLoading(true)
+    setFailed(false)
+
     databaseService
-      .loadWorkspace(FIXED_WORKSPACE_ID)
+      .loadWorkspace(workspaceId)
       .then((loaded) => {
         if (active) setDatabase(loaded)
       })
@@ -37,7 +44,7 @@ export function AppHomePage() {
     return () => {
       active = false
     }
-  }, [])
+  }, [workspaceId])
 
   return (
     <div className="mx-auto my-0 w-full max-w-5xl p-6">

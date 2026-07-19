@@ -9,20 +9,6 @@ import {
 import { apiService } from '@/services/ApiService'
 
 /**
- * Workspace de entrada — FIXA por enquanto.
- *
- * "IFC Blumenau — Professores", do seed do backend: 3 colunas (E-mail/text,
- * Área/select, Ativo/checkbox) e 26 filhas (os docentes). O usuário logado
- * (admin@cubs.local) é o dono da página de entrada dela, que é o que a API
- * exige para ler/editar.
- *
- * TEMPORÁRIO: quando existir o contexto de workspace (seleção pelo usuário),
- * este id sai daqui e vira estado. Nada mais no código assume uma workspace
- * única — todo o resto recebe o id da PÁGINA por parâmetro.
- */
-export const FIXED_WORKSPACE_ID = '01KXDN4B182DJGAKPX0940H54N'
-
-/**
  * Leitura de uma base do Cub's.
  *
  * O modelo é RECURSIVO: `page_edges` liga parent → child entre páginas, e não
@@ -38,6 +24,10 @@ export const FIXED_WORKSPACE_ID = '01KXDN4B182DJGAKPX0940H54N'
  *
  * O contrato de dados e a tradução para o modelo da lib `cubs-database` ficam
  * em `@/lib/databaseParser`; aqui só mora o I/O.
+ *
+ * Nada aqui assume uma workspace única: quem sabe QUAL workspace está em foco é
+ * o `WorkspaceContext` (`@/contexts/WorkspaceContext`), que fornece o id — este
+ * service só recebe ids por parâmetro.
  */
 export class DatabaseService {
   /** A página em si — `data` guarda as views salvas. */

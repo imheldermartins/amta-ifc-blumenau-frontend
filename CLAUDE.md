@@ -56,8 +56,54 @@ e o que muda é apenas o id.
     `column_data` do dataset também;
   - as colunas saem de `/pages/parent/:id/columns`, NUNCA do dataset — o JOIN
     dele parte dos valores, então coluna ainda sem valor não apareceria;
-  - `pages.data` guarda as views (`{ [ulid]: view }`); entrada com formato
+  - `pages.data` guarda o **snapshot** (ver abaixo); entrada com formato
     inesperado é descartada, e base sem view cai num fallback de id FIXO.
+
+### Snapshot (personalização por view)
+
+**"Snapshot" é o nome oficial do padrão** — use o termo em código, comentário e
+commit. É o que `pages.data` guarda: a personalização de cada view da base,
+indexada pelo **ULID da view** (que é a identidade da tab — gerar um novo a cada
+render trocaria a view ativa a cada refetch):
+
+```jsonc
+{ "<ulid-da-view>": {
+    "view": "table",              // table | board | calendar
+    "name": "Docentes",
+    "filters": "",                // string opaca; o backend nunca interpreta
+    "orderedHeaderCols": ["page_title", "<id-da-coluna>"],
+    "columnWidths": { "page_title": 280 }   // opcional
+} }
+```
+
+Cada entrada é o **retrato completo** da view, não campos remendáveis. Daí o
+nome — e daí a armadilha:
+
+> `PUT /pages/:id` substitui `data` **INTEIRO**. Não há rota por view. Salvar
+> uma view exige reenviar todas as outras (read-modify-write); mandar só a
+> editada **apaga as demais**.
+
+**Por que assim:** o snapshot é estrutura **associativa** — vem junto com a
+página numa leitura só, sem join. A ordem das colunas é o ÍNDICE DO ARRAY em
+`orderedHeaderCols`, não um campo `order` numérico: evita reindexar/rebalancear
+frações a cada movimentação, e reordenar já custa a reescrita do objeto inteiro
+de qualquer jeito. E mora na view — não em `page_edges`, que é por LINHA — para
+não multiplicar dado por linha nem misturar dois eixos (a mesma coluna pode ser
+larga numa view e estreita em outra).
+
+**Custo aceito:** o snapshot cita ids de coluna, então deletar uma coluna deixa
+referência pendurada em `orderedHeaderCols`/`columnWidths` — e essa limpeza não
+existe hoje. É benigno na leitura: `reorderByIds` ignora id desconhecido, então
+coluna morta vira lixo, não UI quebrada. Ao implementar a escrita, podar em vez
+de ressuscitar.
+
+**Estado:** formato e leitura prontos (`parseViewSettings`, `parseDatabase`).
+**A escrita ainda NÃO existe no app** — `apiService.put` está implementado mas
+nunca é chamado; os únicos POSTs são de auth. As views que existem na base do
+seed foram gravadas à mão pelo PUT genérico (o seed cria `data: {}`).
+
+Definição canônica, invariantes e pontos em aberto (incl. o que fazer com o
+`FALLBACK_VIEW_ID` ao persistir): `cubs-backend/docs/INTEGRACAO.md` §2.
 
 ## Convenções
 
@@ -117,6 +163,53 @@ presença da prop `name`:
 Ao criar um componente de campo novo, siga o mesmo padrão: um `*View`
 controlado + um wrapper de form (`useController`/`register`) + um público que
 decide por `name`. Modo form exige `<FormProvider>` acima.
+
+## Estado na URL (query)
+
+Busca, filtro, aba aberta, página da listagem: mora na URL, não em `useState` —
+é o estado que o usuário espera copiar, favoritar e desfazer com o "voltar".
+Estado efêmero (modal aberta, hover) continua em `useState`.
+
+- `src/lib/queryParams.ts` — semântica pura (merge, coerção de leitura),
+  testável sem React nem router.
+- `src/hooks/useQueryParams.ts` — liga aquilo ao TanStack. Funciona em qualquer
+  componente sob o `<RouterProvider>`: sem `from`, sem a rota declarar nada.
+
+```tsx
+const query = useQueryParams<'q' | 'view'>()   // o generic só tipa as CHAVES
+
+query.get('q')                          // string | undefined
+query.getNumber('page')                 // number | undefined
+query.set('view', 'board')              // preserva as outras chaves
+query.set({ name: 'Helder', age: 20 })  // ?name=Helder&age=20, 1 navegação só
+query.remove('q')                       // ou set('q', null)
+```
+
+**Vazio é ausente**: `null`, `undefined` e `''` apagam a chave ao escrever e
+voltam `undefined` na leitura — nunca sobra `?q=` pendurado.
+
+**Leitura é sempre explícita.** O router coage o valor antes de você ver
+(`?age=20` chega como number, `?ok=true` como boolean, chave repetida como
+array). Por isso `get` devolve SEMPRE string e number/boolean/lista se pedem
+por método (`getNumber`, `getBoolean`, `getAll`).
+
+Duas armadilhas do router, ambas por causa da mesma regra — `navigate` sem
+`search` **zera a query**:
+
+- escrevendo à mão, use a forma funcional (`search: (prev) => ...`), que é o
+  que o hook já faz. `navigate({ to })` seco apaga tudo;
+- `<Link to="...">` também apaga. Para preservar, `search={(prev) => prev}` (ou
+  `search={true}`). Os links de seção da sidebar apagam **de propósito**: a
+  busca é da tela que ficou para trás.
+
+`<SearchBar>` (topbar) é o exemplo montado: o estado dele é `?q=`, ninguém
+passa `value`/`onChange`, e quem consome lê `useQueryParams().get('q')` de onde
+estiver. Entrada contínua escreve com `{ replace: true }` — sem isso cada tecla
+vira uma entrada no histórico.
+
+Quando uma rota quiser garantias de verdade (default, coerção, recusar lixo),
+o caminho é `validateSearch` + `Route.useSearch()` NELA; este hook segue
+valendo para o resto.
 
 ## Verificação
 
