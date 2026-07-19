@@ -14,7 +14,6 @@ export type { TableCellProps } from './components/TableCell'
 
 export type {
   CellData,
-  CellHandle,
   ColumnDataType,
   ContextMenuItem,
   DataViewKind,
@@ -24,7 +23,18 @@ export type {
   RowData,
 } from './types'
 
-export { cx, formatCellValue, reorderByIds, ulid } from './utils'
+export {
+  cx,
+  formatCellValue,
+  inferColumnType,
+  reorderByIds,
+  resolveColumnTypes,
+  resolveColumnWidth,
+  ulid,
+  DEFAULT_COLUMN_WIDTH,
+  MIN_COLUMN_WIDTH,
+  MAX_COLUMN_WIDTH,
+} from './utils'
 export { mockableData, MOCK_VIEW_IDS } from './mockableData'
 export type { MockableDataset } from './mockableData'
 export { CUBS_DATABASE_VERSION } from './version'

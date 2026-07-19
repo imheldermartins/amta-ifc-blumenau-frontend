@@ -1,7 +1,7 @@
 {
   "name": "cubs-database",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "description": "Visualização da base de dados simulada (PageTree) do Cub's — componente + utils + mockableData.",
   "main": "dist/index.js",

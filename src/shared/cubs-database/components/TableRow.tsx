@@ -1,11 +1,11 @@
 import { Icon } from '@iconify/react'
 
-import type { HeaderCol, RowData } from '../types'
+import type { ColumnDataType, HeaderCol, RowData } from '../types'
 import { cx } from '../utils'
 import { TableCell } from './TableCell'
 
 /** Largura da célula de controles — o header usa o MESMO valor para alinhar. */
-export const CONTROL_CELL_WIDTH = 'w-32'
+export const CONTROL_CELL_WIDTH = 'w-24'
 
 export interface TableRowLabels {
   drag?: string
@@ -17,6 +17,10 @@ export interface TableRowLabels {
 export interface TableRowProps {
   row: RowData
   columns: HeaderCol[]
+  /** `columnWidths` da view (px por ID de coluna) — o header usa o MESMO mapa. */
+  columnWidths?: Record<string, number>
+  /** Tipos resolvidos por ID de coluna — o header usa o MESMO mapa. */
+  columnTypes?: Record<string, ColumnDataType>
   /** true = linha "listrada" (bg-contrast); false = bg-background. */
   zebra: boolean
   selected: boolean
@@ -32,16 +36,19 @@ export interface TableRowProps {
  * drag-handle + checkbox + botão "Abrir ›"; aparecem no hover da linha e
  * ficam fixos quando ela está selecionada.
  */
-export function TableRow({ row, columns, zebra, selected, onSelectedChange, onOpenRow, labels }: TableRowProps) {
+export function TableRow({ row, columns, columnWidths, columnTypes, zebra, selected, onSelectedChange, onOpenRow, labels }: TableRowProps) {
   return (
     <div
       role="row"
-      className={cx('group/row flex items-stretch', zebra ? 'bg-contrast' : 'bg-background')}
+      className={cx(
+        'group/row flex w-max min-w-full items-stretch',
+        zebra ? 'bg-contrast' : 'bg-background',
+      )}
     >
       <div
         role="cell"
         className={cx(
-          'flex shrink-0 items-center gap-1 px-2 py-1.5',
+          'flex shrink-0 items-center gap-1',
           CONTROL_CELL_WIDTH,
           'transition-opacity',
           selected ? 'opacity-100' : 'opacity-0 group-hover/row:opacity-100 focus-within:opacity-100',
@@ -50,9 +57,9 @@ export function TableRow({ row, columns, zebra, selected, onSelectedChange, onOp
         <button
           type="button"
           aria-label={labels?.drag ?? 'Arrastar linha'}
-          className="cursor-grab rounded p-1 opacity-60 transition-colors hover:bg-active hover:opacity-100"
+          className="cursor-grab rounded px-0.5 py-1 opacity-60 transition-colors hover:bg-active hover:opacity-100"
         >
-          <Icon icon="lucide:grip-vertical" fontSize={15} />
+          <Icon icon="lucide:grip-vertical" />
         </button>
         <input
           type="checkbox"
@@ -64,15 +71,21 @@ export function TableRow({ row, columns, zebra, selected, onSelectedChange, onOp
         <button
           type="button"
           onClick={() => onOpenRow?.(row)}
-          className="flex items-center gap-0.5 rounded px-1.5 py-0.5 text-xs opacity-70 transition-colors hover:bg-active hover:opacity-100"
+          className="flex items-center gap-0.5 rounded px-1.5 py-0.5 text-xs opacity-70 transition-colors hover:opacity-100 cursor-pointer"
         >
           {labels?.open ?? 'Abrir'}
-          <Icon icon="lucide:chevron-right" fontSize={13} className="shrink-0" />
+          <Icon icon="lucide:chevron-right" className="shrink-0" />
         </button>
       </div>
 
       {columns.map((column) => (
-        <TableCell key={column.id} column={column} row={row} />
+        <TableCell
+          key={column.id}
+          column={column}
+          row={row}
+          columnType={columnTypes?.[column.id]}
+          width={columnWidths?.[column.id]}
+        />
       ))}
     </div>
   )

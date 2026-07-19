@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import type { ReactNode } from 'react'
 import { Icon } from '@iconify/react'
 
 import { ViewTabsBar } from './components/ViewTabsBar'
 import { TableView } from './components/TableView'
 import type { TableRowLabels } from './components/TableRow'
 import type { ContextMenuItem, DataViewSettings, DataViewType, HeaderCol, RowData } from './types'
-import { CUBS_DATABASE_VERSION } from './version'
 import { cx, reorderByIds } from './utils'
 
 const FALLBACK_VIEW: DataViewType = {
@@ -17,10 +15,6 @@ const FALLBACK_VIEW: DataViewType = {
 }
 
 export interface CubsDatabaseProps {
-  /** Título exibido na barra superior. */
-  title?: ReactNode
-  /** Nome "físico" da tabela simulada (ex.: page_tree). */
-  tableName?: string
   /** Views salvas — chave é o ULID da view; cada uma vira uma tab da topbar. */
   settings: DataViewSettings
   /** Colunas na ordem natural de display (esq→dir); a view pode reordenar. */
@@ -29,26 +23,27 @@ export interface CubsDatabaseProps {
   /** Modo controlado da view ativa; sem isso o componente controla sozinho. */
   activeViewId?: string
   onViewChange?: (viewId: string) => void
-  /** Itens do ContextMenu da tab ativa (o app host injeta labels/i18n). */
+  /** Itens do ContextMenu das tabs (botão direito; app host injeta i18n). */
   viewMenuItems?: (viewId: string) => ContextMenuItem[]
+  /** Clique no botão "Abrir ›" de uma linha — recebe a row crua. */
+  onOpenRow?: (row: RowData) => void
   /** Fetch inicial em andamento → skeleton. */
   loading?: boolean
   emptyLabel?: string
   /** Texto das views ainda não implementadas (board/calendar). */
   placeholderLabel?: string
-  /** Labels de acessibilidade do gutter (drag/checkbox). */
+  /** Labels de acessibilidade/texto dos controles da linha. */
   labels?: TableRowLabels
   className?: string
 }
 
 /**
  * Visualização da base simulada (PageTree): topbar de views (tabs + context
- * menu) e a view ativa. Por enquanto só 'table' renderiza de verdade; board e
- * calendar mostram placeholder.
+ * menu no botão direito) e a view ativa — sem chrome em volta, só a view.
+ * Por enquanto só 'table' renderiza de verdade; board e calendar mostram
+ * placeholder.
  */
 export function CubsDatabase({
-  title,
-  tableName,
   // Defaults defensivos: consumidor JS (sem TS) pode omitir na prática.
   settings = {},
   headerCols = [],
@@ -56,6 +51,7 @@ export function CubsDatabase({
   activeViewId,
   onViewChange,
   viewMenuItems,
+  onOpenRow,
   loading,
   emptyLabel,
   placeholderLabel = 'Em breve.',
@@ -75,18 +71,6 @@ export function CubsDatabase({
 
   return (
     <section className={cx('w-full', className)}>
-      <header className="flex items-center justify-between gap-3 px-1 pb-2">
-        <div className="flex items-baseline gap-2">
-          {title ? <h2 className="text-base font-semibold">{title}</h2> : null}
-          {tableName ? (
-            <code className="rounded bg-active px-1.5 py-0.5 text-xs">{tableName}</code>
-          ) : null}
-        </div>
-        <span className="whitespace-nowrap text-xs opacity-60">
-          cubs-database v{CUBS_DATABASE_VERSION}
-        </span>
-      </header>
-
       <ViewTabsBar
         settings={settings}
         activeViewId={currentViewId}
@@ -95,13 +79,14 @@ export function CubsDatabase({
       />
 
       <div className="pt-2">
-        {/* Should use mappedView from object */}
         {currentView.view === 'table' ? (
           <TableView
             columns={orderedColumns}
             rows={rows}
+            columnWidths={currentView.columnWidths}
             loading={loading}
             emptyLabel={emptyLabel}
+            onOpenRow={onOpenRow}
             labels={labels}
           />
         ) : (

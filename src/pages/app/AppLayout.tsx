@@ -90,7 +90,7 @@ export function AppLayout() {
                       className={cn(
                         'w-full inline-flex items-center gap-2 px-3 py-1.5 rounded transition-all ease-in duration-200',
                         location.pathname === item.href
-                          ? 'bg-p-purple-500 text-white shadow-xl shadow-p-purple-600/20 dark:shadow-p-purple-500/20 hover:bg-p-purple-400 dark:hover:bg-p-purple-600'
+                          ? 'bg-p-purple-500 text-white shadow-xl shadow-p-purple-600/40 dark:shadow-p-purple-500/40 hover:bg-p-purple-400 dark:hover:bg-p-purple-600'
                           : 'hover:bg-active',
                       )}
                     >

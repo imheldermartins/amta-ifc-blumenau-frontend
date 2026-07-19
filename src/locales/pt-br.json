@@ -23,7 +23,7 @@
   },
   "pages": {
     "home": {
-      "bem-vindo-ao-cubs": "Bem-vindo ao Cub's!",
+      "bem-vindo-ao-cubs": "Bem-vindo ao <green>{{appName}}</green>!",
       "descricao": "Sua plataforma está sendo construída. Entre ou crie uma conta para começar.",
       "entrar": "Entrar",
       "criar-conta": "Criar conta"
@@ -95,7 +95,6 @@
       },
       "headline": "Area de Trabalho",
       "cubs-database": {
-        "titulo": "Base de dados (simulação)",
         "vazio": "Nenhum registro.",
         "em-breve": "Esta view ainda está em construção.",
         "abrir": "Abrir",

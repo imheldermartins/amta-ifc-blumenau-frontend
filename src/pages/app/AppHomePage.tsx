@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CubsDatabase, mockableData } from 'cubs-database'
-import type { HeaderCol, RowData } from 'cubs-database'
+import type { RowData } from 'cubs-database'
 
 import { i18n } from '@/lib/i18n'
 import { Typography } from '@components/Typography'
@@ -23,24 +23,6 @@ export function AppHomePage() {
     return () => clearTimeout(timer)
   }, [])
 
-  // O app host injeta o comportamento (e i18n) por cima do handle do mock.
-  const headerCols = useMemo<HeaderCol[]>(
-    () =>
-      dataset.headerCols.map((column) =>
-        column.handle
-          ? {
-              ...column,
-              handle: {
-                ...column.handle,
-                name: i18n('pages.app.cubs-database.abrir'),
-                onClick: (row: RowData) => console.log('[cubs-database] abrir página:', row),
-              },
-            }
-          : column,
-      ),
-    [],
-  )
-
   return (
     <div className="mx-auto my-0 w-full max-w-5xl p-6">
       <Typography variant="h1">
@@ -49,17 +31,17 @@ export function AppHomePage() {
 
       <CubsDatabase
         className="mt-8"
-        title={i18n('pages.app.cubs-database.titulo')}
-        tableName={dataset.tableName}
         settings={dataset.settings}
-        headerCols={headerCols}
+        headerCols={dataset.headerCols}
         rows={rows}
         loading={loading}
         emptyLabel={i18n('pages.app.cubs-database.vazio')}
         placeholderLabel={i18n('pages.app.cubs-database.em-breve')}
+        onOpenRow={(row) => console.log('abrindo página', row)}
         labels={{
           drag: i18n('pages.app.cubs-database.arrastar-linha'),
           select: i18n('pages.app.cubs-database.selecionar-linha'),
+          open: i18n('pages.app.cubs-database.abrir'),
         }}
         viewMenuItems={(viewId) => [
           {

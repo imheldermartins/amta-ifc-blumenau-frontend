@@ -1,3 +1,5 @@
+import type { ColumnDataType, HeaderCol, RowData } from './types'
+
 /** Junta classes ignorando valores falsy — mínimo e sem dependências. */
 export function cx(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(' ')
@@ -10,6 +12,81 @@ export function formatCellValue(value: unknown): string {
   if (value instanceof Date) return value.toISOString()
   if (typeof value === 'object') return JSON.stringify(value)
   return String(value)
+}
+
+/**
+ * Data no formato `YYYY-MM-DD`, com hora opcional (`2026-07-10 09:12`, ISO com
+ * `T`/`Z`/offset). Proposital NÃO usar `Date.parse`: ele aceita coisa demais
+ * ("Home" vira data em alguns engines) e transformaria texto em data.
+ */
+const DATE_LIKE = /^\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?$/
+
+/** Tipo de UM valor. `null` = vazio/indeterminado, não conta na inferência. */
+function inferValueType(value: unknown): ColumnDataType | null {
+  if (value === null || value === undefined || value === '') return null
+  if (typeof value === 'boolean') return 'checkbox'
+  if (typeof value === 'number') return Number.isFinite(value) ? 'numeric' : null
+  if (value instanceof Date) return 'date'
+  if (typeof value === 'string') return DATE_LIKE.test(value) ? 'date' : 'text'
+  return 'text'
+}
+
+/**
+ * Tipo de uma coluna a partir dos seus valores, para quando `HeaderCol.type`
+ * não vem declarado. Conservador de propósito:
+ *
+ * - células vazias são ignoradas (uma linha sem valor não muda o tipo);
+ * - valores de tipos DIFERENTES entre si → 'text' (o denominador comum);
+ * - coluna toda vazia → 'text'.
+ *
+ * 'select' nunca é inferido: distinguir select de text exigiria adivinhar por
+ * cardinalidade ("poucos valores repetidos"), e o palpite erraria justamente
+ * nas colunas de texto curto. Select precisa vir declarado.
+ */
+export function inferColumnType(values: Iterable<unknown>): ColumnDataType {
+  let inferred: ColumnDataType | null = null
+  for (const value of values) {
+    const type = inferValueType(value)
+    if (type === null) continue
+    if (inferred === null) inferred = type
+    else if (inferred !== type) return 'text'
+  }
+  return inferred ?? 'text'
+}
+
+/**
+ * Tipo FINAL de cada coluna, por ID: o declarado quando existe, senão o
+ * inferido dos valores daquela coluna em todas as linhas. Resolver aqui (uma
+ * vez, no nível da tabela) e não dentro da célula é o que mantém o ícone do
+ * header e as células concordando — do mesmo jeito que `columnWidths`.
+ */
+export function resolveColumnTypes(
+  columns: HeaderCol[],
+  rows: RowData[],
+): Record<string, ColumnDataType> {
+  const types: Record<string, ColumnDataType> = {}
+  for (const column of columns) {
+    types[column.id] =
+      column.type ?? inferColumnType(rows.map((row) => row.cells[column.id]?.value))
+  }
+  return types
+}
+
+/** Largura (px) de uma coluna sem entrada em `columnWidths` da view. */
+export const DEFAULT_COLUMN_WIDTH = 176
+/** Piso do resize: abaixo disso o ícone de tipo + título não cabem. */
+export const MIN_COLUMN_WIDTH = 80
+/** Teto do resize: evita uma coluna sozinha estourar a largura da tabela. */
+export const MAX_COLUMN_WIDTH = 720
+
+/**
+ * Largura final de uma coluna, em px. Header e células chamam esta MESMA
+ * função com o MESMO valor da view — é o que garante que as duas grades
+ * fiquem alinhadas. Ausente/inválido cai no default; fora da faixa é clampado.
+ */
+export function resolveColumnWidth(width: number | undefined): number {
+  if (typeof width !== 'number' || !Number.isFinite(width)) return DEFAULT_COLUMN_WIDTH
+  return Math.min(MAX_COLUMN_WIDTH, Math.max(MIN_COLUMN_WIDTH, Math.round(width)))
 }
 
 /** Alfabeto Crockford base32 (sem I, L, O, U) usado pelo ULID. */

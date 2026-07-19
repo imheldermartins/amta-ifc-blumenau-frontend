@@ -29,15 +29,27 @@ export interface DataViewType {
    * ordem natural de `headerCols`.
    */
   orderedHeaderCols: string[]
+  /**
+   * Largura das colunas EM PIXELS, indexada pelo ID da coluna. Mora na VIEW e
+   * não na coluna de propósito: largura é apresentação, então a mesma coluna
+   * pode ser larga numa view e estreita em outra — e é aqui que o resize de
+   * coluna vai persistir. Coluna ausente = `DEFAULT_COLUMN_WIDTH`; valores
+   * fora da faixa são clampados por `resolveColumnWidth`.
+   */
+  columnWidths?: Record<string, number>
 }
 
 /** Conjunto de views: chave = ULID da view. */
 export type DataViewSettings = Record<string, DataViewType>
 
-/** Dados de uma linha: as células são indexadas pelo ID da coluna. */
+/**
+ * Dados de uma linha: as células são indexadas pelo ID da coluna. Nem toda
+ * página tem valor para toda coluna, então a célula pode estar AUSENTE — o
+ * acesso `cells[id]` é `CellData | undefined` e quem renderiza trata o vazio.
+ */
 export interface RowData {
   id: string
-  cells: Record<string, CellData>
+  cells: Record<string, CellData | undefined>
 }
 
 /** Célula sempre no formato `{ value }`; o TIPO vem da coluna, não da célula. */
@@ -49,7 +61,12 @@ export interface CellData {
 export interface HeaderCol {
   id: string
   title: string
-  /** Ausente = 'text' (caso do título da página, que toda página tem). */
+  /**
+   * Ausente = INFERIDO dos valores da coluna (`inferColumnType`). A lib não
+   * assume nada sobre por que o type falta — se a base tem colunas sem type
+   * declarado, isso é regra de negócio de quem monta os dados, e a tabela só
+   * precisa saber como desenhar a célula.
+   */
   type?: ColumnDataType
 }
 

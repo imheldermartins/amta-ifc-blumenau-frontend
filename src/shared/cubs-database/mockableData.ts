@@ -14,19 +14,19 @@ export const MOCK_VIEW_IDS = {
   calendar: '01JZFM3T4VCX3Y5Z7A9B2C4D6E',
 } as const
 
-const COL = {
-  title: 'col-title',
-  slug: 'col-slug',
-  status: 'col-status',
-  published: 'col-published',
-  order: 'col-order',
-  updatedAt: 'col-updated-at',
-} as const
+// const COL = {
+//   title: 'col-title',
+//   slug: 'col-slug',
+//   status: 'col-status',
+//   published: 'col-published',
+//   order: 'col-order',
+//   updatedAt: 'col-updated-at',
+// } as const
 
 /**
  * Dados simulados para desenvolvimento/preview. O dataset `pageTree` imita a
  * base do PageTree sem replicar a arquitetura literal: colunas dinâmicas
- * tipadas + o título (sem type → 'text'), que toda página tem.
+ * tipadas, e algumas SEM type declarado — a tabela infere o tipo dos valores.
  */
 export const mockableData = {
   pageTree: {
@@ -36,11 +36,29 @@ export const mockableData = {
         view: 'table',
         name: 'Tabela',
         filters: '',
-        orderedHeaderCols: [COL.title, COL.slug, COL.status, COL.published, COL.order, COL.updatedAt],
+        orderedHeaderCols: [
+          '01KXVP2382G5ABC7K14NSY1BH2',
+          '01KXVP2384NCBVJPGW1X15BE0K',
+          '01KXVP2384YERQ9A792YD04K1R',
+          '01KXVP2384TVZM7W5EASN3PX27',
+          '01KXVP2384JC1VE6GNSW4RDMJ3',
+          '01KXVP2384GBJBCMVTG98K901B',
+          '01KXVP47F97M7QXWEWQNP4KK9N'
+        ],
+        // Larguras por coluna (px). 'BlaBlaBla' fica de fora de propósito:
+        // exercita o fallback pro DEFAULT_COLUMN_WIDTH.
+        columnWidths: {
+          ['01KXVP2382G5ABC7K14NSY1BH2']: 240,
+          ['01KXVP2384NCBVJPGW1X15BE0K']: 220,
+          ['01KXVP2384YERQ9A792YD04K1R']: 140,
+          ['01KXVP2384TVZM7W5EASN3PX27']: 110,
+          ['01KXVP2384JC1VE6GNSW4RDMJ3']: 100,
+          ['01KXVP2384GBJBCMVTG98K901B']: 180,
+        },
       },
       [MOCK_VIEW_IDS.board]: {
         view: 'board',
-        name: 'Board',
+        name: 'Kanban',
         filters: 'status=published',
         orderedHeaderCols: [],
       },
@@ -52,101 +70,105 @@ export const mockableData = {
       },
     },
     headerCols: [
-      // Título é o campo padrão de toda página: sem type (default 'text').
-      { id: COL.title, title: 'Título', handle: { icon: 'lucide:maximize-2', name: 'Abrir' } },
-      { id: COL.slug, title: 'Slug', type: 'text' },
-      { id: COL.status, title: 'Status', type: 'select' },
-      { id: COL.published, title: 'Publicada', type: 'checkbox' },
-      { id: COL.order, title: 'Ordem', type: 'numeric' },
-      { id: COL.updatedAt, title: 'Atualizada em', type: 'date' },
+      // Sem type declarado: a tabela infere 'text' das strings.
+      { id: '01KXVP2382G5ABC7K14NSY1BH2', title: 'Título' },
+      { id: '01KXVP2384NCBVJPGW1X15BE0K', title: 'Slug', type: 'text' },
+      { id: '01KXVP2384YERQ9A792YD04K1R', title: 'Status', type: 'select' },
+      { id: '01KXVP2384TVZM7W5EASN3PX27', title: 'Publicada', type: 'checkbox' },
+      { id: '01KXVP2384JC1VE6GNSW4RDMJ3', title: 'Ordem', type: 'numeric' },
+      { id: '01KXVP2384GBJBCMVTG98K901B', title: 'Atualizada em', type: 'date' },
+      // Sem type e com valor em UMA linha só: infere 'numeric' desse valor —
+      // as 7 linhas vazias não interferem.
+      { id: '01KXVP47F97M7QXWEWQNP4KK9N', title: 'BlaBlaBla' },
     ],
     rows: [
       {
         id: 'pg_01',
         cells: {
-          [COL.title]: { value: 'Home' },
-          [COL.slug]: { value: 'home' },
-          [COL.status]: { value: 'Publicada' },
-          [COL.published]: { value: true },
-          [COL.order]: { value: 1 },
-          [COL.updatedAt]: { value: '2026-07-10 09:12' },
+          ['01KXVP2382G5ABC7K14NSY1BH2']: { value: 'Home' },
+          ['01KXVP2384NCBVJPGW1X15BE0K']: { value: 'home' },
+          ['01KXVP2384YERQ9A792YD04K1R']: { value: 'Publicada' },
+          ['01KXVP2384TVZM7W5EASN3PX27']: { value: true },
+          ['01KXVP2384JC1VE6GNSW4RDMJ3']: { value: 1 },
+          ['01KXVP2384GBJBCMVTG98K901B']: { value: '2026-07-10 09:12' },
+          ['01KXVP47F97M7QXWEWQNP4KK9N']: { value: 100 },
         },
       },
       {
         id: 'pg_02',
         cells: {
-          [COL.title]: { value: 'Documentação' },
-          [COL.slug]: { value: 'docs' },
-          [COL.status]: { value: 'Publicada' },
-          [COL.published]: { value: true },
-          [COL.order]: { value: 2 },
-          [COL.updatedAt]: { value: '2026-07-11 14:40' },
+          ['01KXVP2382G5ABC7K14NSY1BH2']: { value: 'Documentação' },
+          ['01KXVP2384NCBVJPGW1X15BE0K']: { value: 'docs' },
+          ['01KXVP2384YERQ9A792YD04K1R']: { value: 'Publicada' },
+          ['01KXVP2384TVZM7W5EASN3PX27']: { value: true },
+          ['01KXVP2384JC1VE6GNSW4RDMJ3']: { value: 2 },
+          ['01KXVP2384GBJBCMVTG98K901B']: { value: '2026-07-11 14:40' },
         },
       },
       {
         id: 'pg_03',
         cells: {
-          [COL.title]: { value: 'Primeiros passos' },
-          [COL.slug]: { value: 'docs/getting-started' },
-          [COL.status]: { value: 'Revisão' },
-          [COL.published]: { value: true },
-          [COL.order]: { value: 3 },
-          [COL.updatedAt]: { value: '2026-07-12 08:05' },
+          ['01KXVP2382G5ABC7K14NSY1BH2']: { value: 'Primeiros passos' },
+          ['01KXVP2384NCBVJPGW1X15BE0K']: { value: 'docs/getting-started' },
+          ['01KXVP2384YERQ9A792YD04K1R']: { value: 'Revisão' },
+          ['01KXVP2384TVZM7W5EASN3PX27']: { value: true },
+          ['01KXVP2384JC1VE6GNSW4RDMJ3']: { value: 3 },
+          ['01KXVP2384GBJBCMVTG98K901B']: { value: '2026-07-12 08:05' },
         },
       },
       {
         id: 'pg_04',
         cells: {
-          [COL.title]: { value: 'API' },
-          [COL.slug]: { value: 'docs/api' },
-          [COL.status]: { value: 'Rascunho' },
-          [COL.published]: { value: false },
-          [COL.order]: { value: 4 },
-          [COL.updatedAt]: { value: '2026-07-13 17:22' },
+          ['01KXVP2382G5ABC7K14NSY1BH2']: { value: 'API' },
+          ['01KXVP2384NCBVJPGW1X15BE0K']: { value: 'docs/api' },
+          ['01KXVP2384YERQ9A792YD04K1R']: { value: 'Rascunho' },
+          ['01KXVP2384TVZM7W5EASN3PX27']: { value: false },
+          ['01KXVP2384JC1VE6GNSW4RDMJ3']: { value: 4 },
+          ['01KXVP2384GBJBCMVTG98K901B']: { value: '2026-07-13 17:22' },
         },
       },
       {
         id: 'pg_05',
         cells: {
-          [COL.title]: { value: 'Blog' },
-          [COL.slug]: { value: 'blog' },
-          [COL.status]: { value: 'Publicada' },
-          [COL.published]: { value: true },
-          [COL.order]: { value: 5 },
-          [COL.updatedAt]: { value: '2026-07-14 10:00' },
+          ['01KXVP2382G5ABC7K14NSY1BH2']: { value: 'Blog' },
+          ['01KXVP2384NCBVJPGW1X15BE0K']: { value: 'blog' },
+          ['01KXVP2384YERQ9A792YD04K1R']: { value: 'Publicada' },
+          ['01KXVP2384TVZM7W5EASN3PX27']: { value: true },
+          ['01KXVP2384JC1VE6GNSW4RDMJ3']: { value: 5 },
+          ['01KXVP2384GBJBCMVTG98K901B']: { value: '2026-07-14 10:00' },
         },
       },
       {
         id: 'pg_06',
         cells: {
-          [COL.title]: { value: 'Primeiro post' },
-          [COL.slug]: { value: 'blog/primeiro-post' },
-          [COL.status]: { value: 'Rascunho' },
-          [COL.published]: { value: false },
-          [COL.order]: { value: 6 },
-          [COL.updatedAt]: { value: '2026-07-15 19:47' },
+          ['01KXVP2382G5ABC7K14NSY1BH2']: { value: 'Primeiro post' },
+          ['01KXVP2384NCBVJPGW1X15BE0K']: { value: 'blog/primeiro-post' },
+          ['01KXVP2384YERQ9A792YD04K1R']: { value: 'Rascunho' },
+          ['01KXVP2384TVZM7W5EASN3PX27']: { value: false },
+          ['01KXVP2384JC1VE6GNSW4RDMJ3']: { value: 6 },
+          ['01KXVP2384GBJBCMVTG98K901B']: { value: '2026-07-15 19:47' },
         },
       },
       {
         id: 'pg_07',
         cells: {
-          [COL.title]: { value: 'Sobre' },
-          [COL.slug]: { value: 'sobre' },
-          [COL.status]: { value: 'Publicada' },
-          [COL.published]: { value: true },
-          [COL.order]: { value: 7 },
-          [COL.updatedAt]: { value: '2026-07-15 21:30' },
+          ['01KXVP2382G5ABC7K14NSY1BH2']: { value: 'Sobre' },
+          ['01KXVP2384NCBVJPGW1X15BE0K']: { value: 'sobre' },
+          ['01KXVP2384YERQ9A792YD04K1R']: { value: 'Publicada' },
+          ['01KXVP2384TVZM7W5EASN3PX27']: { value: true },
+          ['01KXVP2384JC1VE6GNSW4RDMJ3']: { value: 7 },
+          ['01KXVP2384GBJBCMVTG98K901B']: { value: '2026-07-15 21:30' },
         },
       },
       {
         id: 'pg_08',
         cells: {
-          [COL.title]: { value: 'Contato' },
-          [COL.slug]: { value: 'contato' },
-          [COL.status]: { value: 'Publicada' },
-          [COL.published]: { value: true },
-          [COL.order]: { value: 8 },
-          [COL.updatedAt]: { value: '2026-07-16 07:58' },
+          ['01KXVP2382G5ABC7K14NSY1BH2']: { value: 'Contato' },
+          ['01KXVP2384NCBVJPGW1X15BE0K']: { value: 'contato' },
+          ['01KXVP2384YERQ9A792YD04K1R']: { value: 'Publicada' },
+          ['01KXVP2384TVZM7W5EASN3PX27']: { value: true },
+          ['01KXVP2384JC1VE6GNSW4RDMJ3']: { value: 8 },
+          ['01KXVP2384GBJBCMVTG98K901B']: { value: '2026-07-16 07:58' },
         },
       },
     ],

@@ -168,10 +168,12 @@
 }
 
 @layer base {
+
   /* Toda borda sem cor explícita usa o divider. */
   * {
     @apply border-divider;
   }
+
   body {
     @apply bg-background text-foreground;
   }

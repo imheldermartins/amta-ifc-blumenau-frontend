@@ -38,17 +38,19 @@ tokens do tema do Cub's (`bg-contrast`, `border-divider`, ...). Em outro
 projeto sem esses tokens, a tabela renderiza sem estilo. O plano é embutir CSS
 próprio da lib (ou tokens com fallback) antes da versão externa de verdade.
 
-## Estado atual (v0.5)
+## Estado atual (v0.6)
 
 - `settings: Record<ulid, DataViewType>` — views salvas (`view`, `name`,
   `filters` como string p/ futura query da URL, `orderedHeaderCols` reordenando
   colunas por id de forma imutável).
-- Topbar de views: tabs com scroll-x automático; clique na tab ativa abre o
-  **ContextMenu** (clique esquerdo, fundo glass `bg-glass backdrop-blur-md`).
-- View `table`: header com ícone do tipo, zebra striping contígua
-  (background × contrast), gutter por linha (drag-handle + checkbox no hover)
-  e `handle` por coluna — botão flutuante na direita da célula (hover) que
-  recebe a row crua no `onClick`.
+- Topbar de views: tabs com scroll SÓ horizontal (vertical hidden);
+  **ContextMenu abre com botão DIREITO** na tab (fundo glass
+  `bg-glass backdrop-blur-md`); segurar/arrastar fica para o DnD futuro.
+- View `table`: sem chrome em volta (só a view). Header com ícone do tipo,
+  zebra striping contígua (background × contrast) com separadores verticais
+  entre colunas. A PRIMEIRA célula é estática (posição zero, dentro da zebra)
+  com drag-handle + checkbox + botão "Abrir ›" (`onOpenRow` recebe a row
+  crua); controles aparecem no hover da linha.
 - Tipos de coluna: `text | numeric | select | date | checkbox`
   (título sem type → 'text'). `board`/`calendar` são placeholder.
 - A lógica pura do processo (PageTree) entra nas próximas versões.
