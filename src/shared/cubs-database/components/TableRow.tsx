@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react'
+import { Checkbox, cn } from 'cubs-components'
 
 import type { ColumnDataType, HeaderCol, RowData } from '../types'
-import { cx } from '../utils'
 import { TableCell } from './TableCell'
 
 /** Largura da célula de controles — o header usa o MESMO valor para alinhar. */
@@ -40,14 +40,14 @@ export function TableRow({ row, columns, columnWidths, columnTypes, zebra, selec
   return (
     <div
       role="row"
-      className={cx(
+      className={cn(
         'group/row flex w-max min-w-full items-stretch',
         zebra ? 'bg-contrast' : 'bg-background',
       )}
     >
       <div
         role="cell"
-        className={cx(
+        className={cn(
           'flex shrink-0 items-center gap-1',
           CONTROL_CELL_WIDTH,
           'transition-opacity',
@@ -61,12 +61,11 @@ export function TableRow({ row, columns, columnWidths, columnTypes, zebra, selec
         >
           <Icon icon="lucide:grip-vertical" />
         </button>
-        <input
-          type="checkbox"
+        <Checkbox
           aria-label={labels?.select ?? 'Selecionar linha'}
           checked={selected}
-          onChange={(event) => onSelectedChange(event.target.checked)}
-          className="size-4 cursor-pointer accent-p-purple-600"
+          onCheckedChange={onSelectedChange}
+          className="cursor-pointer"
         />
         <button
           type="button"

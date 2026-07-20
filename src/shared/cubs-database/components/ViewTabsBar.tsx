@@ -1,10 +1,9 @@
 import { useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 import { Icon } from '@iconify/react'
+import { ContextMenu, cn, type ContextMenuItem } from 'cubs-components'
 
-import type { ContextMenuItem, DataViewKind, DataViewSettings } from '../types'
-import { cx } from '../utils'
-import { ContextMenu } from './ContextMenu'
+import type { DataViewKind, DataViewSettings } from '../types'
 
 const VIEW_ICON: Record<DataViewKind, string> = {
   table: 'lucide:table',
@@ -57,7 +56,7 @@ export function ViewTabsBar({ settings, activeViewId, onViewChange, viewMenuItem
                 if (!active) onViewChange(viewId)
               }}
               onContextMenu={(event) => handleTabContextMenu(viewId, event)}
-              className={cx(
+              className={cn(
                 '-mb-px flex shrink-0 items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-1.5 text-sm transition-colors',
                 active
                   ? 'border-p-purple text-foreground'

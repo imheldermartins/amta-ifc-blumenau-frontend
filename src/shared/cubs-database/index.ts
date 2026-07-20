@@ -1,8 +1,6 @@
 export { CubsDatabase } from './CubsDatabase'
 export type { CubsDatabaseProps } from './CubsDatabase'
 
-export { ContextMenu } from './components/ContextMenu'
-export type { ContextMenuProps } from './components/ContextMenu'
 export { ViewTabsBar } from './components/ViewTabsBar'
 export type { ViewTabsBarProps } from './components/ViewTabsBar'
 export { TableView } from './components/TableView'
@@ -15,7 +13,6 @@ export type { TableCellProps } from './components/TableCell'
 export type {
   CellData,
   ColumnDataType,
-  ContextMenuItem,
   DataViewKind,
   DataViewSettings,
   DataViewType,
@@ -23,8 +20,14 @@ export type {
   RowData,
 } from './types'
 
+/**
+ * `ContextMenuItem` mora em `cubs-components` (junto do componente), mas é
+ * re-exportado aqui porque `CubsDatabaseProps.viewMenuItems` o usa — quem
+ * consome esta lib precisa do tipo para montar a prop.
+ */
+export type { ContextMenuItem } from 'cubs-components'
+
 export {
-  cx,
   formatCellValue,
   inferColumnType,
   reorderByIds,

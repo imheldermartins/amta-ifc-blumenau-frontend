@@ -1,17 +1,15 @@
 import { useState } from 'react'
 import { Link, Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { Icon } from '@iconify/react'
+import { Button, Switch, cn } from 'cubs-components'
 
-import { Button } from '@components/Button'
 import { Modal } from '@components/Modal'
 import { SearchBar } from '@components/SearchBar'
-import { Switch } from '@components/Switch'
 import { Typography } from '@components/Typography'
 import { useWorkspace, type WorkspaceState } from '@/contexts/WorkspaceContext'
 import { useDialog } from '@/hooks/useDialog'
 import { useTheme } from '@/hooks/useTheme'
 import { i18n } from '@/lib/i18n'
-import { cn } from '@/lib/utils'
 import { THEME } from '@/lib/theme'
 
 /**

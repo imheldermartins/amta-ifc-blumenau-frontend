@@ -42,11 +42,14 @@ aguardam a mesma chamada de refresh (o token não é rotacionado N vezes).
 
 ## Formulários (react-hook-form)
 
-- Os inputs se registram sozinhos via contexto: envolva o form em
-  `<FormProvider {...form}>` e use o [TextField](src/components/TextField.tsx)
-  com `name` — estado, validação e mensagem de erro vêm do próprio campo,
-  sem `useState` manual. Use `noValidate` no `<form>` (a validação é do RHF).
-- **Máscaras** ([src/lib/masks.ts](src/lib/masks.ts)): `phone-br`, `cpf`,
+- Os campos se registram sozinhos via contexto: envolva o form em
+  `<FormProvider {...form}>` e use `TextField`, `Checkbox`, `Select` ou
+  `Switch` (de [cubs-components](src/shared/cubs-components)) com `name` —
+  estado, validação e mensagem de erro vêm do próprio campo, sem `useState`
+  manual. Use `noValidate` no `<form>` (a validação é do RHF). Nenhum
+  `<input>`/`<select>` avulso: os componentes existem para isso.
+- **Máscaras** ([masks.ts](src/shared/cubs-components/lib/masks.ts)):
+  `phone-br`, `cpf`,
   `cep`, `date` e `currency` (BRL por enquanto; `currency-<codigo>` quando
   houver outras moedas — os dígitos são tratados como centavos e formatados
   via `Intl.NumberFormat`; `unmaskCurrencyCents` faz o caminho de volta).
@@ -242,13 +245,13 @@ O passo a passo também está comentado no topo de `src/lib/i18n.ts`.
   `rounded`, ...
 - [theme.ts](src/lib/theme.ts) — os mesmos tokens como classes utilitárias
   prontas + a persistência do tema (localStorage).
-- [palette.ts](src/lib/palette.ts) — cores de destaque com chaves semânticas
+- [palette.ts](src/shared/cubs-components/lib/palette.ts) — cores de destaque com chaves semânticas
   mapeando hues do Tailwind: `red → rose`, `blue → blue`, `purple → violet`,
   `green → emerald`. Regra de tema: tom `-300` no light e `-500` no dark
   (texto sobre fundo colorido é sempre `zinc-950`; texto NA cor usa
   `-600`/`-400` para leitura). Classes literais (Tailwind não compila classe
   montada em runtime) e helpers `paletteBgText` / `paletteBorderText`.
-- [Button.tsx](src/components/Button.tsx) — variantes `filled`, `outlined` e
+- [Button.tsx](src/shared/cubs-components/Button.tsx) — variantes `filled`, `outlined` e
   `text` (só a cor no texto em repouso; fundo aparece no hover). Cor padrão
   `purple`; `color` aceita qualquer cor da paleta ou `from-theme`, que usa os
   tokens neutros do tema (`foreground` no texto, `active` no fundo) em vez de
@@ -322,4 +325,4 @@ Vite/TS especial. Publicar num registro npm no futuro usa o mesmo `dist`
   `SignUpPage`, ...).
 - Dependências sempre com versão exata (`npm install --save-exact`).
 - Composição de classes com o util `cn` (`clsx` + `tailwind-merge`) de
-  `src/lib/utils.ts`.
+  `cubs-components`.

@@ -113,8 +113,10 @@ Definição canônica, invariantes e pontos em aberto (incl. o que fazer com o
   solta em componente.
 - **Nomes**: funções `camelCase`; Components/Services/Sections `PascalCase`;
   rotas kebab-case.
-- **Aliases**: `@/*`, `@components`, `@contexts`, `@locales`.
-- **Classes**: componha com `cn` (`src/lib/utils.ts`). O Tailwind só gera
+- **Aliases**: `@/*`, `@components`, `@contexts`, `@locales`. As libs autorais
+  (`cubs-components`, `cubs-database`) também são aliases — apontam para a
+  FONTE em `src/shared/`, não para o `node_modules`.
+- **Classes**: componha com `cn` (de `cubs-components`). O Tailwind só gera
   classe que aparece **escrita por extenso** no código — nada de
   `bg-${cor}-600` montado em runtime.
 
@@ -134,16 +136,63 @@ Definição canônica, invariantes e pontos em aberto (incl. o que fazer com o
     combine com um tamanho (`shadow-xl shadow-p-red`).
   - Escala completa p/ controle fino: `bg-p-red-500`, `text-p-red-600
     dark:text-p-red-400`, `shadow-p-red-600/20 dark:shadow-p-red-500/20`, etc.
-  - `src/lib/palette.ts` (`PALETTE`) é só para cor **dinâmica por prop**
+  - `PALETTE` (de `cubs-components`) é só para cor **dinâmica por prop**
     (`<Button color={cor} />`) — compõe as mesmas classes `p-*`. Para cor fixa,
     prefira os utilitários e NÃO importe `PALETTE`. Filled colorido usa texto
     branco (`text-white`).
 - `src/components/Typography.tsx` — todo texto usa variants (`h1`..`caption`).
 
+## Onde mora um componente
+
+Duas casas, e a regra é o acoplamento:
+
+- **`src/shared/cubs-components/`** — primitiva que não sabe nada do app:
+  `Button`, `TextField`, `Checkbox`, `Select`, `Switch`, `ContextMenu`, mais
+  `cn`/`PALETTE`/`applyMask`. É pacote versionável (mesmo esquema da
+  `cubs-database`: FONTE em `src/shared`, `packages/` é o artefato).
+- **`src/components/`** — componente que FALA com o app: router, contexto,
+  i18n. Hoje: `SearchBar` (query params), `Modal` (i18n), `ThemeToggle`
+  (contexto de tema), `Typography`.
+
+Componente do pacote **nunca chama `i18n`** — recebe rótulo por prop
+(`labels?.select ?? 'Selecionar linha'`). É o que permite ele servir a lib e o
+app sem arrastar o i18n junto.
+
+**Contrato de tokens.** O pacote emite classes que só renderizam certo se o
+consumidor definir as variáveis do `src/index.css` (`background`, `contrast`,
+`active`, `divider`, `divider-contrast`, `foreground`, `glass` e as escalas
+`p-*`). Está declarado em `packages/cubs-components/README.md`.
+
+**Ordem de build.** `cubs-database` importa `cubs-components`, e o build do
+pacote resolve pelo `node_modules` (dist), não pelo alias — então o dist do
+`cubs-components` precisa estar atualizado ANTES. O script
+`cubs-database:build` já encadeia os dois; rodar o `build.mjs` na mão pula isso
+e falha com "has no exported member".
+
+> **shadcn é scaffolding, não fonte.** Existe um `components.json`, mas NÃO
+> existe `src/components/ui/` e nenhum componente veio do CLI. Radix entra
+> quando a mecânica vale (a11y, teclado, portal — `Checkbox`, `Select`,
+> `Modal`); a APARÊNCIA é sempre reescrita com os tokens acima. Não rode
+> `npx shadcn add` esperando que o resultado se encaixe: ele traz outro
+> vocabulário de tokens (`border-input`, `text-muted-foreground`, ...) que
+> briga com esta seção.
+
 ## Componentes dual-mode (form OU state)
 
-Os componentes de formulário funcionam nos **dois fluxos**, e a escolha é pela
-presença da prop `name`:
+**Nada de elemento de formulário cru.** `<input>`, `<select>`, `<textarea>` e
+`<button>` de ação só existem DENTRO de `cubs-components` — em página, section
+ou lib, use o componente. O motivo não é estética: o campo cru não tem o erro,
+o `aria-invalid`, a máscara nem os tokens de tema, e cada cópia diverge da
+seguinte. (Exceção tolerada: `<button>` de ícone puro dentro de um componente,
+como o "limpar" da `SearchBar`.)
+
+**Formulário é react-hook-form.** Havendo mais de um campo, ou qualquer
+validação, o caminho é `useForm` + `<FormProvider>` + os campos por `name` —
+não `useState` por campo. `useState` fica para campo solto sem validação (a
+busca da topbar, um filtro).
+
+Os componentes funcionam nos **dois fluxos**, e a escolha é pela presença da
+prop `name`:
 
 - **`name` presente → modo FORM** (react-hook-form): o componente se registra
   sozinho no `<FormProvider>` acima (estado, validação e erro vêm do form).
@@ -151,14 +200,30 @@ presença da prop `name`:
   ou `checked`/`onCheckedChange`), com erro via prop.
 
 ```tsx
-// TextField
+// TextField — `rules` só faz sentido no modo form
 <TextField name="cpf" label="CPF" mask="cpf" rules={validators.cpf()} />        // form
-<TextField label="Busca" value={q} onChange={(e) => setQ(e.target.value)} />     // state
+<TextField label="Busca" value={q} onChange={(e) => setQ(e.target.value)} />    // state
+
+// Checkbox — `indeterminate` é SÓ do modo state (agregado, não valor submetido)
+<Checkbox name="aceito" label="Aceito os termos" rules={validators.required()} /> // form
+<Checkbox checked={marcadas} onCheckedChange={setTodas} aria-label="Todas" />     // state
+
+// Select — `options` por prop; o form guarda o `value`, não o label
+<Select name="uf" label="UF" options={ufs} rules={validators.required()} />     // form
+<Select options={ufs} value={uf} onValueChange={setUf} aria-label="UF" />       // state
 
 // Switch
-<Switch name="aceito" label="Aceito os termos" />                                // form
-<Switch checked={dark} onCheckedChange={setDark} label="Modo escuro" />          // state
+<Switch name="ativo" label="Ativo" />                                           // form
+<Switch checked={dark} onCheckedChange={setDark} label="Modo escuro" />         // state
 ```
+
+Sem `label` visível, passe `aria-label` — o campo precisa de nome acessível.
+Com `label`, a associação é implícita (o `<label>` envolve o input), sem id.
+
+`TextField` cobre também os campos que não têm cara de formulário, via `size`
+(`sm` h-9 / `md` h-10), `surface` (`background` / `contrast`) e os slots
+`startAdornment`/`endAdornment`. A `SearchBar` é exatamente isso — não um
+`<input>` avulso com classes copiadas.
 
 Ao criar um componente de campo novo, siga o mesmo padrão: um `*View`
 controlado + um wrapper de form (`useController`/`register`) + um público que

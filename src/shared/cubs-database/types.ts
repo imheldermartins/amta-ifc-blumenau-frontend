@@ -70,11 +70,8 @@ export interface HeaderCol {
   type?: ColumnDataType
 }
 
-/** Item do ContextMenu (aberto com botão DIREITO do mouse). */
-export interface ContextMenuItem {
-  id: string
-  label: string
-  icon?: string
-  danger?: boolean
-  onSelect?: () => void
-}
+/*
+ * `ContextMenuItem` saiu daqui: o componente ContextMenu virou primitiva
+ * compartilhada em `cubs-components`, e o tipo foi junto. O `index.ts`
+ * re-exporta para quem consome esta lib.
+ */

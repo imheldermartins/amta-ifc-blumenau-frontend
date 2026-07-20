@@ -1,14 +1,11 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from '@tanstack/react-router'
+import { Button, PALETTE, TextField, cn } from 'cubs-components'
 
-import { Button } from '@components/Button'
-import { TextField } from '@components/TextField'
 import { Typography } from '@components/Typography'
 import { useAuth } from '@contexts/AuthContext'
 import { i18n } from '@/lib/i18n'
-import { PALETTE } from '@/lib/palette'
-import { cn } from '@/lib/utils'
 import { combineRules, validators } from '@/lib/validators'
 import { EmailInUseError } from '@/services/AuthService'
 

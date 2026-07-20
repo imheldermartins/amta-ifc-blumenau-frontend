@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { Trans } from 'react-i18next'
+import { Button } from 'cubs-components'
 
-import { Button } from '@components/Button'
 import { Typography } from '@components/Typography'
 import { i18n } from '@/lib/i18n'
 

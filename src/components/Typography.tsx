@@ -1,7 +1,7 @@
 import type { ElementType, HTMLAttributes } from 'react'
+import { cn } from 'cubs-components'
 
 import { THEME } from '@/lib/theme'
-import { cn } from '@/lib/utils'
 
 export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'subtitle' | 'body' | 'caption'
 

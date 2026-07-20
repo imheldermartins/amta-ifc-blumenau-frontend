@@ -1,6 +1,6 @@
 /**
- * Builda a lib a partir da FONTE (src/shared/cubs-database) direto para
- * packages/cubs-database/dist: JS (ESM) + .d.ts. É o dist que vai no tarball
+ * Builda o pacote a partir da FONTE (src/shared/cubs-components) direto para
+ * packages/cubs-components/dist: JS (ESM) + .d.ts. É o dist que vai no tarball
  * do `npm pack` — outro projeto consome só o node_modules, sem TS.
  */
 import { execFileSync } from 'node:child_process'
@@ -15,13 +15,13 @@ const pkg = JSON.parse(readFileSync(join(libRoot, 'package.json'), 'utf8'))
 
 rmSync(dist, { recursive: true, force: true })
 
-// tsc do app host (a lib não tem node_modules próprio)
+// tsc do app host (o pacote não tem node_modules próprio)
 const tsc = join(appRoot, 'node_modules', 'typescript', 'bin', 'tsc')
 execFileSync(process.execPath, [tsc, '-p', join(libRoot, 'tsconfig.build.json')], {
   stdio: 'inherit',
 })
 
-/** Todos os .js/.d.ts do dist, RECURSIVO — a lib tem subpasta (components/). */
+/** Todos os .js/.d.ts do dist, RECURSIVO — o pacote tem subpasta (lib/). */
 function* emittedFiles(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name)
@@ -45,4 +45,4 @@ for (const filePath of emittedFiles(dist)) {
   )
 }
 
-console.log(`cubs-database v${pkg.version}: dist gerado em packages/cubs-database/dist`)
+console.log(`cubs-components v${pkg.version}: dist gerado em packages/cubs-components/dist`)

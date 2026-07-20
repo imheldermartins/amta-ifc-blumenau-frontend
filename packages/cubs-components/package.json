@@ -1,9 +1,9 @@
 {
-  "name": "cubs-database",
+  "name": "cubs-components",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.1.0",
   "type": "module",
-  "description": "Visualização da base de dados simulada (PageTree) do Cub's — componente + utils + mockableData.",
+  "description": "Primitivas de UI do Cub's — dual-mode (react-hook-form ou state), sobre o contrato de tokens do tema.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -21,9 +21,12 @@
     "bump": "node scripts/bump.mjs",
     "prepack": "node scripts/build.mjs"
   },
+  "dependencies": {
+    "clsx": "2.1.1",
+    "tailwind-merge": "3.6.0"
+  },
   "peerDependencies": {
-    "@iconify/react": ">=6.0.0",
-    "cubs-components": ">=0.1.0",
-    "react": ">=19.0.0"
+    "react": ">=19.0.0",
+    "react-hook-form": ">=7.80.0"
   }
 }

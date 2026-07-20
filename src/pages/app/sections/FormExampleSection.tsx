@@ -1,13 +1,10 @@
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { Button, PALETTE, TextField, cn } from 'cubs-components'
 
-import { Button } from '@components/Button'
-import { TextField } from '@components/TextField'
 import { Typography } from '@components/Typography'
 import { i18n } from '@/lib/i18n'
-import { PALETTE } from '@/lib/palette'
 import { THEME } from '@/lib/theme'
-import { cn } from '@/lib/utils'
 import { combineRules, validators } from '@/lib/validators'
 
 interface ProfileFormValues {

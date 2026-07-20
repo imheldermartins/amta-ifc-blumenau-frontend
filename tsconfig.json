@@ -9,7 +9,9 @@
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@contexts/*": ["./src/contexts/*"],
-      "@locales/*": ["./src/locales/*"]
+      "@locales/*": ["./src/locales/*"],
+      "cubs-database": ["./src/shared/cubs-database/index.ts"],
+      "cubs-components": ["./src/shared/cubs-components/index.ts"]
     }
   }
 }

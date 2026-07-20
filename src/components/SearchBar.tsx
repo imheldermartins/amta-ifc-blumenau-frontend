@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Icon } from '@iconify/react'
+import { TextField, cn } from 'cubs-components'
 
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { i18n } from '@/lib/i18n'
 import { THEME } from '@/lib/theme'
-import { cn } from '@/lib/utils'
 
 export interface SearchBarProps {
   /** Chave da query onde o texto fica. Padrão: `q` (`?q=helder`). */
@@ -83,46 +83,40 @@ export function SearchBar({
   }
 
   return (
-    <div role="search" className={cn('relative flex items-center', className)}>
-      <Icon
-        icon="lucide:search"
-        fontSize={16}
-        className={cn('pointer-events-none absolute left-3 shrink-0', THEME.textMuted)}
-      />
-      <input
+    <div role="search" className={className}>
+      <TextField
         type="search"
+        size="sm"
+        surface="contrast"
         value={value}
         aria-label={label}
         placeholder={placeholder}
+        // O botão de limpar só existe com texto, mas o espaço dele é reservado
+        // sempre — senão o texto pula ao digitar o primeiro caractere.
+        inputClassName="pr-9"
         onChange={(event) => setValue(event.target.value)}
         onKeyDown={(event) => {
           if (event.key === 'Escape') clear()
         }}
-        className={cn(
-          // `divider-contrast`, não `divider`: sobre `bg-contrast` os dois tons
-          // são o MESMO (zinc-200/zinc-800), e a borda sumiria nos dois temas —
-          // é o par que a sidebar já usa para superfície elevada.
-          'h-9 w-full rounded border border-divider-contrast bg-contrast pl-9 pr-9 text-sm',
-          'placeholder:text-zinc-500 dark:placeholder:text-zinc-400',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-divider-contrast',
-          // O "x" nativo do WebKit duplicaria o botão de limpar abaixo — que é
-          // o que existe no Firefox e o que acompanha o tema.
-          '[&::-webkit-search-cancel-button]:hidden',
-        )}
+        startAdornment={
+          <Icon icon="lucide:search" fontSize={16} className={cn('shrink-0', THEME.textMuted)} />
+        }
+        endAdornment={
+          value !== '' && (
+            <button
+              type="button"
+              onClick={clear}
+              aria-label={i18n('common.busca.limpar')}
+              className={cn(
+                'cursor-pointer rounded p-0.5 transition-colors hover:bg-active',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-divider-contrast',
+              )}
+            >
+              <Icon icon="lucide:x" fontSize={14} className={THEME.textMuted} />
+            </button>
+          )
+        }
       />
-      {value !== '' && (
-        <button
-          type="button"
-          onClick={clear}
-          aria-label={i18n('common.busca.limpar')}
-          className={cn(
-            'absolute right-2 cursor-pointer rounded p-0.5 transition-colors hover:bg-active',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-divider-contrast',
-          )}
-        >
-          <Icon icon="lucide:x" fontSize={14} className={THEME.textMuted} />
-        </button>
-      )}
     </div>
   )
 }

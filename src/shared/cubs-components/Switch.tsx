@@ -1,6 +1,6 @@
 import { useController, useFormContext } from 'react-hook-form'
 
-import { cn } from '@/lib/utils'
+import { cn } from './lib/utils'
 
 interface SwitchViewProps {
   /** Estado atual do switch. */
@@ -32,7 +32,7 @@ function SwitchView({ checked, onCheckedChange, label, disabled, className }: Sw
         className={cn(
           'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-divider',
-          checked ? 'bg-violet-600 dark:bg-violet-500' : 'bg-divider-contrast',
+          checked ? 'bg-p-purple' : 'bg-divider-contrast',
         )}
       >
         <span

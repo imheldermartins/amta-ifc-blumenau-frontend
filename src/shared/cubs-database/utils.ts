@@ -1,10 +1,5 @@
 import type { ColumnDataType, HeaderCol, RowData } from './types'
 
-/** Junta classes ignorando valores falsy — mínimo e sem dependências. */
-export function cx(...parts: Array<string | false | null | undefined>): string {
-  return parts.filter(Boolean).join(' ')
-}
-
 /** Formata um valor de célula para exibição na tabela. */
 export function formatCellValue(value: unknown): string {
   if (value === null || value === undefined || value === '') return '—'

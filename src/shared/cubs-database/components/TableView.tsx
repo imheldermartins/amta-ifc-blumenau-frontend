@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import { Icon } from '@iconify/react'
+import { cn } from 'cubs-components'
 
 import type { ColumnDataType, HeaderCol, RowData } from '../types'
-import { cx, resolveColumnTypes, resolveColumnWidth } from '../utils'
+import { resolveColumnTypes, resolveColumnWidth } from '../utils'
 import { CONTROL_CELL_WIDTH, TableRow } from './TableRow'
 import type { TableRowLabels } from './TableRow'
 
@@ -58,7 +59,7 @@ export function TableView({ columns, rows, columnWidths, loading, emptyLabel = '
   return (
     <div role="table" className="overflow-x-auto">
       <div role="row" className="flex w-max min-w-full border-b border-divider">
-        <div className={cx('shrink-0', CONTROL_CELL_WIDTH)} aria-hidden />
+        <div className={cn('shrink-0', CONTROL_CELL_WIDTH)} aria-hidden />
         {columns.map((column) => (
           <div
             role="columnheader"
@@ -77,9 +78,9 @@ export function TableView({ columns, rows, columnWidths, loading, emptyLabel = '
           {[0, 1, 2, 3].map((skeletonIndex) => (
             <div
               key={skeletonIndex}
-              className={cx('flex', skeletonIndex % 2 === 1 ? 'bg-contrast' : 'bg-background')}
+              className={cn('flex', skeletonIndex % 2 === 1 ? 'bg-contrast' : 'bg-background')}
             >
-              <div className={cx('shrink-0', CONTROL_CELL_WIDTH)} />
+              <div className={cn('shrink-0', CONTROL_CELL_WIDTH)} />
               <div className="flex h-9 flex-1 items-center border-l border-divider px-3">
                 <div className="h-3 w-1/3 animate-pulse rounded bg-active" />
               </div>
@@ -88,7 +89,7 @@ export function TableView({ columns, rows, columnWidths, loading, emptyLabel = '
         </div>
       ) : rows.length === 0 ? (
         <div className="flex">
-          <div className={cx('shrink-0', CONTROL_CELL_WIDTH)} />
+          <div className={cn('shrink-0', CONTROL_CELL_WIDTH)} />
           <div className="flex-1 border-l border-divider px-3 py-8 text-center text-sm opacity-60">
             {emptyLabel}
           </div>

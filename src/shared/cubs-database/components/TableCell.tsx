@@ -1,7 +1,8 @@
 import { Icon } from '@iconify/react'
+import { cn } from 'cubs-components'
 
 import type { ColumnDataType, HeaderCol, RowData } from '../types'
-import { cx, formatCellValue, inferColumnType, resolveColumnWidth } from '../utils'
+import { formatCellValue, inferColumnType, resolveColumnWidth } from '../utils'
 
 function CellValue({ type, value }: { type: ColumnDataType; value: unknown }) {
   if (type === 'checkbox') {
@@ -9,7 +10,7 @@ function CellValue({ type, value }: { type: ColumnDataType; value: unknown }) {
       <Icon
         icon={value ? 'lucide:square-check' : 'lucide:square'}
         fontSize={16}
-        className={cx('shrink-0', value ? 'text-p-green' : 'opacity-40')}
+        className={cn('shrink-0', value ? 'text-p-green' : 'opacity-40')}
       />
     )
   }
@@ -22,7 +23,7 @@ function CellValue({ type, value }: { type: ColumnDataType; value: unknown }) {
     )
   }
   return (
-    <span className={cx('truncate', type === 'numeric' && 'tabular-nums')}>
+    <span className={cn('truncate', type === 'numeric' && 'tabular-nums')}>
       {formatCellValue(value)}
     </span>
   )

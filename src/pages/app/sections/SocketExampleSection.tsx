@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { Button, PALETTE, TextField, cn } from 'cubs-components'
 
-import { Button } from '@components/Button'
-import { TextField } from '@components/TextField'
 import { Typography } from '@components/Typography'
 import { useSocket, type SocketStatus } from '@/hooks/useSocket'
 import { i18n } from '@/lib/i18n'
-import { PALETTE } from '@/lib/palette'
-import { cn } from '@/lib/utils'
 import { validators } from '@/lib/validators'
 import type { EchoReply } from '@/services/SocketService'
 

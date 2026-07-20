@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Icon } from '@iconify/react'
+import { Button, cn } from 'cubs-components'
 
-import { Button } from '@components/Button'
 import { i18n } from '@/lib/i18n'
-import { cn } from '@/lib/utils'
 
 export type ModalSize = 'sm' | 'md' | 'lg'
 

@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Icon } from '@iconify/react'
+import { cn, type ContextMenuItem } from 'cubs-components'
 
 import { ViewTabsBar } from './components/ViewTabsBar'
 import { TableView } from './components/TableView'
 import type { TableRowLabels } from './components/TableRow'
-import type { ContextMenuItem, DataViewSettings, DataViewType, HeaderCol, RowData } from './types'
-import { cx, reorderByIds } from './utils'
+import type { DataViewSettings, DataViewType, HeaderCol, RowData } from './types'
+import { reorderByIds } from './utils'
 
 const FALLBACK_VIEW: DataViewType = {
   view: 'table',
@@ -70,7 +71,7 @@ export function CubsDatabase({
   const orderedColumns = reorderByIds(headerCols, currentView.orderedHeaderCols)
 
   return (
-    <section className={cx('w-full', className)}>
+    <section className={cn('w-full', className)}>
       <ViewTabsBar
         settings={settings}
         activeViewId={currentViewId}

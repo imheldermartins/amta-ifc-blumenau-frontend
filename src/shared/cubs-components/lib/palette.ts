@@ -4,9 +4,10 @@
  * As chaves são SEMÂNTICAS e mapeiam para hues do Tailwind:
  *   red → rose · blue → blue · purple → violet · green → emerald
  *
- * Esse mapeamento está registrado como cor NATIVA do Tailwind em
- * `src/index.css` (escala `p-*`). Então, para a maioria dos casos, você NÃO
- * precisa importar este arquivo — use as classes direto no `className`:
+ * Esse mapeamento está registrado como cor NATIVA do Tailwind no CSS do app
+ * consumidor (escala `p-*`; ver o contrato de tokens no README do pacote).
+ * Então, para a maioria dos casos, você NÃO precisa importar este arquivo —
+ * use as classes direto no `className`:
  *
  *   bg-p-red / text-p-red / border-p-red / shadow-p-red   (tom cheio, theme-aware)
  *   text-p-red-600 dark:text-p-red-400                    (controle fino de tom)
@@ -19,8 +20,8 @@
  * Regra de tema (a mesma da escala): superfície/hover/borda usam `-500..-600`;
  * texto sobre fundo colorido (filled) é branco; texto NA cor usa `-600`/`-400`.
  *
- * Para adicionar uma cor: registre a escala `p-<nome>` no index.css, inclua a
- * chave em `PALETTE_COLORS` e preencha a entrada em `PALETTE`.
+ * Para adicionar uma cor: registre a escala `p-<nome>` no index.css do app,
+ * inclua a chave em `PALETTE_COLORS` e preencha a entrada em `PALETTE`.
  */
 import { clsx } from 'clsx'
 
@@ -88,7 +89,7 @@ export const PALETTE: Record<PaletteColor, PaletteEntry> = {
  * Helper sob demanda que combina `bg` + `text` de contraste de uma cor.
  *
  * @example
- * paletteBgText('blue') // → "bg-blue-600 dark:bg-blue-500 text-white"
+ * paletteBgText('blue') // → "bg-p-blue-500 text-white"
  */
 export function paletteBgText(color: PaletteColor): string {
   const entry = PALETTE[color]
@@ -99,7 +100,7 @@ export function paletteBgText(color: PaletteColor): string {
  * Combina `border` + `text` na própria cor (base do estilo outlined).
  *
  * @example
- * paletteBorderText('green') // → "border-emerald-600 dark:border-emerald-500 text-emerald-600 dark:text-emerald-400"
+ * paletteBorderText('green') // → "border-p-green-600 dark:border-p-green-500 text-p-green-600 dark:text-p-green-400"
  */
 export function paletteBorderText(color: PaletteColor): string {
   const entry = PALETTE[color]

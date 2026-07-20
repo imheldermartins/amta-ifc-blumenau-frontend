@@ -1,12 +1,12 @@
 import type { ComponentProps } from 'react'
 
-import { PALETTE, type PaletteColor, type PaletteEntry } from '@/lib/palette'
-import { cn } from '@/lib/utils'
+import { PALETTE, type PaletteColor, type PaletteEntry } from './lib/palette'
+import { cn } from './lib/utils'
 
 export type ButtonVariant = 'filled' | 'outlined' | 'text'
 
 /**
- * Cor do botão: qualquer cor da paleta (src/lib/palette.ts) OU `from-theme`,
+ * Cor do botão: qualquer cor da paleta (./lib/palette) OU `from-theme`,
  * que não usa um hue e sim os tokens neutros do tema — `foreground` no texto
  * e `active` no fundo (base zinc, acompanha light/dark).
  */

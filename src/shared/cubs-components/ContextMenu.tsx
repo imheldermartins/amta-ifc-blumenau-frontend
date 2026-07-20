@@ -2,8 +2,16 @@ import { useEffect } from 'react'
 import type { CSSProperties } from 'react'
 import { Icon } from '@iconify/react'
 
-import type { ContextMenuItem } from '../types'
-import { cx } from '../utils'
+import { cn } from './lib/utils'
+
+/** Item do ContextMenu (aberto com botão DIREITO do mouse). */
+export interface ContextMenuItem {
+  id: string
+  label: string
+  icon?: string
+  danger?: boolean
+  onSelect?: () => void
+}
 
 export interface ContextMenuProps {
   open: boolean
@@ -15,7 +23,7 @@ export interface ContextMenuProps {
 }
 
 /**
- * Menu contextual (o caller controla `open` — na lib, aberto com botão
+ * Menu contextual (o caller controla `open` — na CubsDatabase, aberto com botão
  * DIREITO na tab da view). Fundo "glass": mesmo tom do background com
  * transparência + backdrop blur. Fecha com clique fora ou Escape.
  */
@@ -42,7 +50,7 @@ export function ContextMenu({ open, onClose, items, className, style }: ContextM
       style={style}
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
-      className={cx(
+      className={cn(
         'absolute z-50 mt-1 min-w-44 rounded-lg border border-divider-contrast p-1 shadow-xl',
         'bg-glass backdrop-blur-md',
         className,
@@ -53,7 +61,7 @@ export function ContextMenu({ open, onClose, items, className, style }: ContextM
           key={item.id}
           type="button"
           role="menuitem"
-          className={cx(
+          className={cn(
             'flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors hover:bg-active',
             item.danger && 'text-p-red',
           )}

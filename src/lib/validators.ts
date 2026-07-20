@@ -1,7 +1,7 @@
 import type { RegisterOptions } from 'react-hook-form'
+import { unmask } from 'cubs-components'
 
 import { i18n } from '@/lib/i18n'
-import { unmask } from '@/lib/masks'
 
 /**
  * Validators reutilizáveis para react-hook-form, com as mensagens de erro já
