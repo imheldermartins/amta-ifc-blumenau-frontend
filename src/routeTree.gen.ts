@@ -12,11 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LangRouteRouteImport } from './routes/$lang/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LangIndexRouteImport } from './routes/$lang/index'
-import { Route as LangAppRouteRouteImport } from './routes/$lang/app/route'
 import { Route as LangPublicRouteRouteImport } from './routes/$lang/_public/route'
-import { Route as LangAppIndexRouteImport } from './routes/$lang/app/index'
 import { Route as LangPublicSignUpRouteImport } from './routes/$lang/_public/sign-up'
 import { Route as LangPublicSignInRouteImport } from './routes/$lang/_public/sign-in'
+import { Route as LangMyworkspaceWorkspaceIdRouteRouteImport } from './routes/$lang/myworkspace/$workspaceId/route'
+import { Route as LangMyworkspaceWorkspaceIdIndexRouteImport } from './routes/$lang/myworkspace/$workspaceId/index'
 
 const LangRouteRoute = LangRouteRouteImport.update({
   id: '/$lang',
@@ -33,19 +33,9 @@ const LangIndexRoute = LangIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LangRouteRoute,
 } as any)
-const LangAppRouteRoute = LangAppRouteRouteImport.update({
-  id: '/app',
-  path: '/app',
-  getParentRoute: () => LangRouteRoute,
-} as any)
 const LangPublicRouteRoute = LangPublicRouteRouteImport.update({
   id: '/_public',
   getParentRoute: () => LangRouteRoute,
-} as any)
-const LangAppIndexRoute = LangAppIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => LangAppRouteRoute,
 } as any)
 const LangPublicSignUpRoute = LangPublicSignUpRouteImport.update({
   id: '/sign-up',
@@ -57,56 +47,73 @@ const LangPublicSignInRoute = LangPublicSignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => LangPublicRouteRoute,
 } as any)
+const LangMyworkspaceWorkspaceIdRouteRoute =
+  LangMyworkspaceWorkspaceIdRouteRouteImport.update({
+    id: '/myworkspace/$workspaceId',
+    path: '/myworkspace/$workspaceId',
+    getParentRoute: () => LangRouteRoute,
+  } as any)
+const LangMyworkspaceWorkspaceIdIndexRoute =
+  LangMyworkspaceWorkspaceIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => LangMyworkspaceWorkspaceIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$lang': typeof LangRouteRouteWithChildren
-  '/$lang/app': typeof LangAppRouteRouteWithChildren
   '/$lang/': typeof LangIndexRoute
+  '/$lang/myworkspace/$workspaceId': typeof LangMyworkspaceWorkspaceIdRouteRouteWithChildren
   '/$lang/sign-in': typeof LangPublicSignInRoute
   '/$lang/sign-up': typeof LangPublicSignUpRoute
-  '/$lang/app/': typeof LangAppIndexRoute
+  '/$lang/myworkspace/$workspaceId/': typeof LangMyworkspaceWorkspaceIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$lang': typeof LangIndexRoute
   '/$lang/sign-in': typeof LangPublicSignInRoute
   '/$lang/sign-up': typeof LangPublicSignUpRoute
-  '/$lang/app': typeof LangAppIndexRoute
+  '/$lang/myworkspace/$workspaceId': typeof LangMyworkspaceWorkspaceIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$lang': typeof LangRouteRouteWithChildren
   '/$lang/_public': typeof LangPublicRouteRouteWithChildren
-  '/$lang/app': typeof LangAppRouteRouteWithChildren
   '/$lang/': typeof LangIndexRoute
+  '/$lang/myworkspace/$workspaceId': typeof LangMyworkspaceWorkspaceIdRouteRouteWithChildren
   '/$lang/_public/sign-in': typeof LangPublicSignInRoute
   '/$lang/_public/sign-up': typeof LangPublicSignUpRoute
-  '/$lang/app/': typeof LangAppIndexRoute
+  '/$lang/myworkspace/$workspaceId/': typeof LangMyworkspaceWorkspaceIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/$lang'
-    | '/$lang/app'
     | '/$lang/'
+    | '/$lang/myworkspace/$workspaceId'
     | '/$lang/sign-in'
     | '/$lang/sign-up'
-    | '/$lang/app/'
+    | '/$lang/myworkspace/$workspaceId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$lang' | '/$lang/sign-in' | '/$lang/sign-up' | '/$lang/app'
+  to:
+    | '/'
+    | '/$lang'
+    | '/$lang/sign-in'
+    | '/$lang/sign-up'
+    | '/$lang/myworkspace/$workspaceId'
   id:
     | '__root__'
     | '/'
     | '/$lang'
     | '/$lang/_public'
-    | '/$lang/app'
     | '/$lang/'
+    | '/$lang/myworkspace/$workspaceId'
     | '/$lang/_public/sign-in'
     | '/$lang/_public/sign-up'
-    | '/$lang/app/'
+    | '/$lang/myworkspace/$workspaceId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -137,26 +144,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangIndexRouteImport
       parentRoute: typeof LangRouteRoute
     }
-    '/$lang/app': {
-      id: '/$lang/app'
-      path: '/app'
-      fullPath: '/$lang/app'
-      preLoaderRoute: typeof LangAppRouteRouteImport
-      parentRoute: typeof LangRouteRoute
-    }
     '/$lang/_public': {
       id: '/$lang/_public'
       path: ''
       fullPath: '/$lang'
       preLoaderRoute: typeof LangPublicRouteRouteImport
       parentRoute: typeof LangRouteRoute
-    }
-    '/$lang/app/': {
-      id: '/$lang/app/'
-      path: '/'
-      fullPath: '/$lang/app/'
-      preLoaderRoute: typeof LangAppIndexRouteImport
-      parentRoute: typeof LangAppRouteRoute
     }
     '/$lang/_public/sign-up': {
       id: '/$lang/_public/sign-up'
@@ -171,6 +164,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/$lang/sign-in'
       preLoaderRoute: typeof LangPublicSignInRouteImport
       parentRoute: typeof LangPublicRouteRoute
+    }
+    '/$lang/myworkspace/$workspaceId': {
+      id: '/$lang/myworkspace/$workspaceId'
+      path: '/myworkspace/$workspaceId'
+      fullPath: '/$lang/myworkspace/$workspaceId'
+      preLoaderRoute: typeof LangMyworkspaceWorkspaceIdRouteRouteImport
+      parentRoute: typeof LangRouteRoute
+    }
+    '/$lang/myworkspace/$workspaceId/': {
+      id: '/$lang/myworkspace/$workspaceId/'
+      path: '/'
+      fullPath: '/$lang/myworkspace/$workspaceId/'
+      preLoaderRoute: typeof LangMyworkspaceWorkspaceIdIndexRouteImport
+      parentRoute: typeof LangMyworkspaceWorkspaceIdRouteRoute
     }
   }
 }
@@ -189,28 +196,31 @@ const LangPublicRouteRouteWithChildren = LangPublicRouteRoute._addFileChildren(
   LangPublicRouteRouteChildren,
 )
 
-interface LangAppRouteRouteChildren {
-  LangAppIndexRoute: typeof LangAppIndexRoute
+interface LangMyworkspaceWorkspaceIdRouteRouteChildren {
+  LangMyworkspaceWorkspaceIdIndexRoute: typeof LangMyworkspaceWorkspaceIdIndexRoute
 }
 
-const LangAppRouteRouteChildren: LangAppRouteRouteChildren = {
-  LangAppIndexRoute: LangAppIndexRoute,
-}
+const LangMyworkspaceWorkspaceIdRouteRouteChildren: LangMyworkspaceWorkspaceIdRouteRouteChildren =
+  {
+    LangMyworkspaceWorkspaceIdIndexRoute: LangMyworkspaceWorkspaceIdIndexRoute,
+  }
 
-const LangAppRouteRouteWithChildren = LangAppRouteRoute._addFileChildren(
-  LangAppRouteRouteChildren,
-)
+const LangMyworkspaceWorkspaceIdRouteRouteWithChildren =
+  LangMyworkspaceWorkspaceIdRouteRoute._addFileChildren(
+    LangMyworkspaceWorkspaceIdRouteRouteChildren,
+  )
 
 interface LangRouteRouteChildren {
   LangPublicRouteRoute: typeof LangPublicRouteRouteWithChildren
-  LangAppRouteRoute: typeof LangAppRouteRouteWithChildren
   LangIndexRoute: typeof LangIndexRoute
+  LangMyworkspaceWorkspaceIdRouteRoute: typeof LangMyworkspaceWorkspaceIdRouteRouteWithChildren
 }
 
 const LangRouteRouteChildren: LangRouteRouteChildren = {
   LangPublicRouteRoute: LangPublicRouteRouteWithChildren,
-  LangAppRouteRoute: LangAppRouteRouteWithChildren,
   LangIndexRoute: LangIndexRoute,
+  LangMyworkspaceWorkspaceIdRouteRoute:
+    LangMyworkspaceWorkspaceIdRouteRouteWithChildren,
 }
 
 const LangRouteRouteWithChildren = LangRouteRoute._addFileChildren(

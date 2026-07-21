@@ -9,7 +9,13 @@ import { Typography } from '@components/Typography'
 // import { FormExampleSection } from '@/pages/app/sections/FormExampleSection'
 // import { SocketExampleSection } from '@/pages/app/sections/SocketExampleSection'
 
-/** Conteúdo provisório provando que as rotas internas renderizam no Outlet de /app. */
+/**
+ * Base de entrada da workspace aberta.
+ *
+ * O id vem da URL (`/$lang/myworkspace/$workspaceId`) pelo contexto; a página
+ * de entrada (page_root) é resolvida no fetch — quem faz o GET-or-create dela é
+ * o `loadWorkspace`, e daí para baixo tudo é página → página.
+ */
 export function AppHomePage() {
   const { workspaceId } = useWorkspace()
   const [database, setDatabase] = useState<ParsedDatabase | null>(null)

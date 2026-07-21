@@ -3,19 +3,20 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { workspaceService, type ApiWorkspace } from '@/services/WorkspaceService'
 
 /**
- * Workspace em foco — FIXA por enquanto.
+ * Workspace de ENTRADA — para onde o app manda quem chega sem id na URL
+ * (sign-in, sign-up, e quem já tem sessão batendo nas rotas públicas).
  *
  * "IFC Blumenau — Professores", do seed do backend: 3 colunas (E-mail/text,
  * Área/select, Ativo/checkbox) e 26 filhas (os docentes). O usuário logado
  * (admin@cubs.local) é o dono da página de entrada dela, que é o que a API
  * exige para ler/editar.
  *
- * TEMPORÁRIO: este id é o valor INICIAL de um estado que ainda não muda. Quando
- * existir o seletor de workspaces do usuário, ele vira só o padrão (ou some, se
- * a escolha vier da URL/preferência) e o provider ganha um `setWorkspaceId` —
- * nada fora daqui precisa mudar, porque todo consumidor já lê o id do contexto.
+ * TEMPORÁRIO: a workspace EM FOCO já não mora aqui — é o parâmetro
+ * `$workspaceId` da rota `/$lang/myworkspace/$workspaceId`. Esta constante
+ * sobrevive só como destino padrão, até existir a listagem de workspaces do
+ * usuário (aí o redirect escolhe a primeira dele, ou a última visitada).
  */
-export const FIXED_WORKSPACE_ID = '01KXDN4B182DJGAKPX0940H54N'
+export const DEFAULT_WORKSPACE_ID = '01KXDN4B182DJGAKPX0940H54N'
 
 export interface WorkspaceState {
   /** Id da workspace em foco. Fonte única — nada deve reescrever a constante. */
@@ -31,7 +32,8 @@ const WorkspaceContext = createContext<WorkspaceState | null>(null)
 /**
  * Workspace atual, carregada uma vez por sessão aberta.
  *
- * O fetch acontece no mount do provider (que vive na rota `/$lang/app`, ou
+ * O `workspaceId` vem de FORA (hoje, do parâmetro de rota) — o provider não
+ * escolhe workspace, só carrega a que lhe deram. O fetch acontece no mount (ou
  * seja: ao carregar o layout) e o resultado fica em memória — trocar de rota
  * dentro do app NÃO refaz a chamada; recarregar a página, sim.
  *
@@ -39,7 +41,13 @@ const WorkspaceContext = createContext<WorkspaceState | null>(null)
  * as colunas, as linhas — continua sendo carregado por quem desenha a página,
  * via `DatabaseService`, a partir do `workspaceId` que este contexto fornece.
  */
-export function WorkspaceProvider({ children }: { children: ReactNode }) {
+export function WorkspaceProvider({
+  workspaceId,
+  children,
+}: {
+  workspaceId: string
+  children: ReactNode
+}) {
   const [workspace, setWorkspace] = useState<ApiWorkspace | null>(null)
   const [loading, setLoading] = useState(true)
   const [failed, setFailed] = useState(false)
@@ -50,7 +58,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     let active = true
 
     workspaceService
-      .getWorkspace(FIXED_WORKSPACE_ID)
+      .getWorkspace(workspaceId)
       .then((loaded) => {
         if (active) setWorkspace(loaded)
       })
@@ -66,11 +74,11 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     return () => {
       active = false
     }
-  }, [])
+  }, [workspaceId])
 
   const value = useMemo<WorkspaceState>(
-    () => ({ workspaceId: FIXED_WORKSPACE_ID, workspace, loading, failed }),
-    [workspace, loading, failed],
+    () => ({ workspaceId, workspace, loading, failed }),
+    [workspaceId, workspace, loading, failed],
   )
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>

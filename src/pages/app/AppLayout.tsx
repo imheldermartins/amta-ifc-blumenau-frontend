@@ -24,17 +24,21 @@ function workspaceLabel({ workspace, loading, failed }: WorkspaceState): string 
 }
 
 export function AppLayout() {
-  const { lang } = useParams({ from: '/$lang/app' })
+  const { lang, workspaceId } = useParams({ from: '/$lang/myworkspace/$workspaceId' })
   const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
   const { theme, toggleTheme } = useTheme()
   const workspaceState = useWorkspace()
   const workspaceDialog = useDialog()
 
+  // A workspace é parte do caminho, então todo link interno carrega o id — a
+  // navegação lateral nunca sai da workspace aberta.
+  const workspaceHref = `/${lang}/myworkspace/${workspaceId}`
+
   const navItems = [
-    { name: i18n('common.navigation.home'), href: `/${lang}/app`, icon: 'lucide:workflow' },
-    { name: i18n('common.navigation.chat'), href: `/${lang}/app/mychat`, icon: 'lucide:message-circle' },
-    { name: i18n('common.navigation.agenda'), href: `/${lang}/app/schedule`, icon: 'lucide:calendar' },
+    { name: i18n('common.navigation.home'), href: workspaceHref, icon: 'lucide:workflow' },
+    { name: i18n('common.navigation.chat'), href: `${workspaceHref}/mychat`, icon: 'lucide:message-circle' },
+    { name: i18n('common.navigation.agenda'), href: `${workspaceHref}/schedule`, icon: 'lucide:calendar' },
   ]
 
   return (
@@ -58,9 +62,9 @@ export function AppLayout() {
     //     <Outlet />
     //   </main>
     // </div>
-    <div className='flex min-h-dvh flex-col'>
+    <div className='flex h-dvh flex-col overflow-hidden'>
 
-      <header className='flex items-center justify-between border-b border-divider px-6 py-2'>
+      <header className='flex items-center justify-between border-b border-divider px-6 py-2 shrink-0'>
         <Button
           variant='text'
           color='from-theme'
@@ -94,7 +98,7 @@ export function AppLayout() {
         </Button>
       </header>
 
-      <div className='flex flex-1'>
+      <div className='flex flex-1 min-h-0'>
         <section
           className={cn(
             'bg-contrast border border-divider-contrast px-2 py-3 m-4 rounded-lg shadow-xl',
@@ -134,7 +138,7 @@ export function AppLayout() {
           />
         </section>
 
-        <main className='flex-1'>
+        <main className='flex-1 min-h-0 overflow-y-auto'>
           <Outlet />
         </main>
       </div>

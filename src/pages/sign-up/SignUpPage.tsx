@@ -5,6 +5,7 @@ import { Button, PALETTE, TextField, cn } from 'cubs-components'
 
 import { Typography } from '@components/Typography'
 import { useAuth } from '@contexts/AuthContext'
+import { DEFAULT_WORKSPACE_ID } from '@/contexts/WorkspaceContext'
 import { i18n } from '@/lib/i18n'
 import { combineRules, validators } from '@/lib/validators'
 import { EmailInUseError } from '@/services/AuthService'
@@ -27,7 +28,11 @@ export function SignUpPage() {
 
   const signUp = useMutation({
     mutationFn: (values: SignUpFormValues) => auth.signUp(values),
-    onSuccess: () => navigate({ to: '/$lang/app', params: { lang } }),
+    onSuccess: () =>
+      navigate({
+        to: '/$lang/myworkspace/$workspaceId',
+        params: { lang, workspaceId: DEFAULT_WORKSPACE_ID },
+      }),
   })
 
   const serverError = signUp.isError
